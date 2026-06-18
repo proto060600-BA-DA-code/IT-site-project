@@ -1,0 +1,56 @@
+{
+  "summary": "Comprehensive end-to-end testing of CommerceIQ Consulting app. Backend: 30/30 pytest tests pass (health, auth, catalog, leads, admin CRUD, stats, SEO, chat SSE). Frontend: Home, PLP, PDP, Category, About/Privacy/Terms, 404, Lead form, Header services hover dropdown, Login (admin), Register, Admin dashboard + all CRUD tabs all functional. One critical UI overlap issue: Chat widget toggle is blocked by Emergent badge in bottom-right corner.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ChatWidget",
+        "issue": "Chat widget toggle button (data-testid=chat-widget-toggle) is positioned at fixed bottom-6 right-6 z-[60] — overlapped/intercepted by the Emergent badge anchor (#emergent-badge) which captures pointer events. As a result clicks on the toggle never open the panel and users cannot use the chatbot. Confirmed via Playwright: 'a#emergent-badge intercepts pointer events'.",
+        "selector": "[data-testid=\"chat-widget-toggle\"]",
+        "priority": "CRITICAL"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Global",
+        "issues": [
+          "Chat toggle FAB overlaps Emergent badge in bottom-right. Move chat widget toggle (or offset by ~64px) so it does not collide with the badge. Suggested fix: bottom-24 right-6 OR right of the badge."
+        ]
+      },
+      {
+        "screen": "Admin layout",
+        "issues": [
+          "data-testid=\"admin-layout\" and data-testid=\"admin-dashboard\" referenced in problem statement are not present on /admin (stat-leads exists). Add the wrapping testids for parity with PRD."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_commerceiq_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Move ChatWidget toggle so it does not overlap the Emergent badge (e.g. bottom-24 right-6, or right-24). Currently clicks are intercepted by #emergent-badge causing the chat panel to never open.",
+    "(Optional) Add data-testid=\"admin-layout\" on AdminLayout root and data-testid=\"admin-dashboard\" on /admin dashboard root for testability parity with PRD."
+  ],
+  "critical_code_review_comments": [
+    "ChatWidget: when send() throws before any event is read, the placeholder assistant bubble is replaced with a friendly error message — good. However, after fetch failure, busy stays true if exception happens before assignment (caught correctly in finally — OK).",
+    "routes_chat.py: SSE generator does not handle disconnects gracefully (no asyncio cancellation guard). On client disconnect mid-stream the assistant message may not be persisted. Consider try/finally to flush.",
+    "routes_seo.py: /api/robots.txt also serves robots from backend, but the user-facing robots.txt is at frontend public path. Two robots endpoints exist; align Sitemap URL — currently it references SITE_URL/sitemap.xml which is /sitemap.xml NOT /api/sitemap.xml. Frontend has no /sitemap.xml route, so the Sitemap directive points to a 404. Update routes_seo.py robots() Sitemap line to SITE_URL/api/sitemap.xml OR add a frontend rewrite.",
+    "models.User: password_hash is included in find_one_and_update etc for admin updates; ensure admin endpoints never expose password_hash (currently projection excludes _id but password_hash leaks via /admin/* user listings if added later)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_commerceiq_api.py (new)"
+  ],
+  "success_rate": {"backend": "100% (30/30)", "frontend": "95% (1 critical UI overlap)"},
+  "test_credentials": "Admin admin@commerceiq.consulting / Admin@12345 (works). Regular users created via /api/auth/register at runtime.",
+  "seed_data_creation": "None outside seeded admin/categories/banners/services/pages. Test-prefixed leads/categories/services/banners/pages are created and deleted within tests.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend is rock-solid (all 30 tests pass). The single blocker is the chat widget toggle being covered by Emergent badge — once main agent repositions the FAB, re-run chat flow: click toggle -> panel opens -> send 'What services do you offer?' -> assistant bubble streams text. SSE backend path /api/chat/stream is verified working independently. SEO sitemap reference URL inside /api/robots.txt is misaligned (points to /sitemap.xml without /api).",
+  "rca of the issue": "ChatWidget overlap RCA: The ChatWidget button uses Tailwind classes 'fixed bottom-6 right-6 z-[60]'. The Emergent platform injects a global element <a id='emergent-badge'> in the same bottom-right region with a higher effective z-index/pointer-events. When a user clicks where the chat FAB visually is, the badge anchor captures the event and the chat toggle's onClick never fires. Playwright reproduces this with: 'a#emergent-badge intercepts pointer events'. Mitigation: offset the chat toggle (e.g., bottom: 88px or right: 88px) so it does not stack on the badge."
+}

@@ -1,0 +1,15 @@
+# Lean dependency set for running the AscendAI backend LOCALLY (browsing, no live chat).
+# Excludes "emergentintegrations" (Emergent-only package) — chat is gated off in routes_chat.py.
+# pip will pull the remaining transitive deps (starlette, anyio, pymongo, etc.) automatically.
+fastapi==0.110.1
+uvicorn==0.25.0
+motor==3.3.1
+pymongo==4.5.0
+pydantic==2.13.4
+python-dotenv==1.2.2
+bcrypt==4.1.3
+PyJWT==2.13.0
+email-validator==2.3.0
+cloudinary==1.44.2
+resend==2.30.1
+anthropic==0.40.0

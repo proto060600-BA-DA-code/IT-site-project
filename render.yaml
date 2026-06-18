@@ -1,0 +1,33 @@
+# Render Blueprint for the AscendAI FastAPI backend.
+# Optional convenience: in Render you can click "New +" -> "Blueprint" and point
+# it at this repo, OR just create a Web Service manually with the settings shown
+# in DEPLOY.md. Either way, fill the env vars marked "sync: false" in the dashboard.
+services:
+  - type: web
+    name: ascendai-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: MONGO_URL          # from MongoDB Atlas (set in dashboard)
+        sync: false
+      - key: DB_NAME
+        value: ascendai
+      - key: JWT_SECRET          # auto-generated secure value
+        generateValue: true
+      - key: ADMIN_EMAIL         # your admin login email
+        sync: false
+      - key: ADMIN_PASSWORD      # your admin login password
+        sync: false
+      - key: CORS_ORIGINS        # your Vercel frontend URL, e.g. https://your-app.vercel.app
+        sync: false
+      - key: SITE_URL            # same Vercel frontend URL
+        sync: false
+      - key: ANTHROPIC_API_KEY   # optional — enables Aria chat
+        sync: false
+      - key: CHAT_MODEL
+        value: claude-sonnet-4-5-20250929

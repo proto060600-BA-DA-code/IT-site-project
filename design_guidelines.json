@@ -1,0 +1,123 @@
+{
+  "project_context": {
+    "brand_name": "AscendAI",
+    "tagline": "IT Business Analysis solutions & AI product building",
+    "theme": "LIGHT",
+    "archetype": "Archetype 4 (Swiss & High-Contrast)",
+    "tone": "Authoritative, modern, intelligent, premium"
+  },
+  "colors": {
+    "background": {
+      "default": "#FFFFFF",
+      "muted": "#F1F5F9",
+      "surface": "#F8FAFC"
+    },
+    "text": {
+      "primary": "#020617",
+      "secondary": "#475569",
+      "inverse": "#F8FAFC"
+    },
+    "brand": {
+      "primary_teal": "#093D45", 
+      "primary_teal_light": "#13626C",
+      "accent_amber": "#D97706",
+      "accent_amber_light": "#F59E0B"
+    },
+    "ui": {
+      "border": "#E2E8F0",
+      "error": "#EF4444",
+      "success": "#10B981"
+    }
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Cabinet Grotesk, sans-serif",
+      "weights": ["300", "800"],
+      "tracking": "tracking-tight",
+      "rule": "Never use Inter or generic fonts for headings"
+    },
+    "body": {
+      "font_family": "IBM Plex Sans, sans-serif",
+      "weights": ["400", "500"]
+    },
+    "sizes": {
+      "h1": "text-5xl sm:text-6xl max-w-4xl",
+      "h2": "text-4xl sm:text-5xl",
+      "h3": "text-2xl sm:text-3xl",
+      "h4": "text-lg sm:text-xl",
+      "body": "text-base",
+      "small": "text-sm tracking-wide uppercase"
+    }
+  },
+  "layout_and_spacing": {
+    "marketing_pages": {
+      "grid": "Bento Grid (grid-cols-1 md:grid-cols-12 gap-8 to gap-12)",
+      "padding": "Generous spacing (py-24, px-8)",
+      "alignment": "Asymmetrical tension, overlapping elements"
+    },
+    "admin_dashboard": {
+      "grid": "Control Room (grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6)",
+      "padding": "Dense (p-6)",
+      "alignment": "Strict grid hierarchy, all pixels utilized"
+    }
+  },
+  "components_strategy": {
+    "marketing_ui": {
+      "rule": "Custom HTML + Tailwind. Avoid Shadcn containers. Use raw divs.",
+      "surface": "Solid backgrounds, sharp borders. 1px solid strokes (border-slate-200) instead of soft drop shadows."
+    },
+    "dashboard_ui": {
+      "rule": "Shadcn UI heavily customized",
+      "surface": "Cardless or flat cards with max 4px border-radius, dense data grids, monochrome + accent colors."
+    },
+    "buttons": {
+      "primary": "bg-[#093D45] text-white hover:bg-[#13626C] rounded-none px-6 py-3 transition-colors",
+      "accent": "bg-[#F59E0B] text-[#020617] hover:bg-[#D97706] rounded-none px-6 py-3 transition-colors font-medium",
+      "ghost": "border border-[#E2E8F0] text-[#020617] hover:bg-slate-50 rounded-none px-6 py-3"
+    }
+  },
+  "icons_and_assets": {
+    "icon_library": "@phosphor-icons/react",
+    "icon_style": "Duotone or Regular weight, crisp and enterprise-grade"
+  },
+  "images": [
+    {
+      "category": "hero_background",
+      "url": "https://images.pexels.com/photos/37320179/pexels-photo-37320179.jpeg",
+      "description": "Sleek glass skyscraper reflecting modern enterprise scale"
+    },
+    {
+      "category": "about_office",
+      "url": "https://images.pexels.com/photos/1313534/pexels-photo-1313534.jpeg",
+      "description": "Reflective glass windows in urban environment"
+    },
+    {
+      "category": "service_consulting",
+      "url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbHMlMjBtb2Rlcm4lMjBtZWV0aW5nfGVufDB8fHx8MTc4MTA3MjA1Mnww&ixlib=rb-4.1.0&q=85",
+      "description": "Consultant presenting in front of clients"
+    },
+    {
+      "category": "service_strategy",
+      "url": "https://images.unsplash.com/photo-1622675363311-3e1904dc1885?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHw0fHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbHMlMjBtb2Rlcm4lMjBtZWV0aW5nfGVufDB8fHx8MTc4MTA3MjA1Mnww&ixlib=rb-4.1.0&q=85",
+      "description": "Four professionals collaborating in board meeting"
+    },
+    {
+      "category": "service_implementation",
+      "url": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbHMlMjBtb2Rlcm4lMjBtZWV0aW5nfGVufDB8fHx8MTc4MTA3MjA1Mnww&ixlib=rb-4.1.0&q=85",
+      "description": "People collaborating inside a meeting room"
+    }
+  ],
+  "accessibility_and_testing": {
+    "contrast": "Ensure all text over teal background is white. Ensure amber buttons have dark text (APCA verified).",
+    "testing_attributes": "ALL interactive elements MUST include a kebab-case data-testid (e.g., data-testid='hero-cta-button', data-testid='login-submit')"
+  },
+  "instructions_to_main_agent": [
+    "Implement marketing pages with pure HTML/Tailwind for max layout control. Use 'Bento Grid' patterns with wide gaps.",
+    "For the PLP/PDP (services), keep it highly professional, leveraging the provided consultation meeting images.",
+    "The CMS dashboard should use Shadcn with a strictly flat, light-themed 'Swiss' brutalist approach. High contrast text.",
+    "Integrate a floating AI chat widget (Claude Sonnet 4.5 proxy) on the bottom right of marketing pages.",
+    "Implement SEO meta tags, Robots.txt, Sitemap generation logic, and JSON-LD schema markup for the services.",
+    "Install and use @phosphor-icons/react for all iconography.",
+    "Ensure all interactive elements have data-testid attributes."
+  ]
+}
