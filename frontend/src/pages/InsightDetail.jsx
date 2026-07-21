@@ -58,7 +58,7 @@ export default function InsightDetail() {
         "datePublished": post.published_at,
         "dateModified": post.updated_at,
         "author": { "@type": "Person", "name": post.author },
-        "publisher": { "@type": "Organization", "name": "AscendAI" },
+        "publisher": { "@type": "Organization", "name": "RK AI Labs" },
         "keywords": (post.tags || []).join(", "),
       }) }} />
     </article>

@@ -1,4 +1,4 @@
-# Running AscendAI locally
+# Running RK AI Labs locally
 
 This gets the full site running on your own machine at **http://localhost:3000**.
 The Aria chat widget is intentionally disabled (it needs an Emergent key); everything
@@ -42,7 +42,7 @@ yarn start
 
 ## Log in as admin
 Visit http://localhost:3000/login and use the seeded credentials:
-- **Email:** `admin@ascendai.in`
+- **Email:** `admin@iamrohankapoor.com`
 - **Password:** `Admin@12345`
 
 (Defined in `backend/.env` — change them there if you like, then restart the backend.)

@@ -6,7 +6,7 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState(() => localStorage.getItem("iris_session") || null);
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi, I'm Aria — the AscendAI assistant. Ask me about business analysis, building an AI product, automating a process, or just tell me what you're trying to solve." },
+    { role: "assistant", content: "Hi, I'm Aria — the RK AI Labs assistant. Ask me about business analysis, building an AI product, automating a process, or just tell me what you're trying to solve." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -99,7 +99,7 @@ export default function ChatWidget() {
             </div>
             <div className="flex-1">
               <div className="text-sm font-semibold">Aria</div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-white/70">AscendAI Assistant · Online</div>
+              <div className="text-[10px] font-mono uppercase tracking-wider text-white/70">RK AI Labs Assistant · Online</div>
             </div>
           </div>
 

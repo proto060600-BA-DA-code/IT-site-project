@@ -95,7 +95,7 @@ export default function ServicePDP() {
         "@type": "Service",
         "serviceType": service.name,
         "description": service.short_description,
-        "provider": { "@type": "ProfessionalService", "name": "AscendAI" },
+        "provider": { "@type": "ProfessionalService", "name": "RK AI Labs" },
         "offers": { "@type": "Offer", "priceSpecification": { "@type": "PriceSpecification", "price": service.price_label } },
       }) }} />
     </div>

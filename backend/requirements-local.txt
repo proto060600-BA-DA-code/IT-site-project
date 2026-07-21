@@ -1,4 +1,4 @@
-# Lean dependency set for running the AscendAI backend LOCALLY (browsing, no live chat).
+# Lean dependency set for running the RK AI Labs backend LOCALLY (browsing, no live chat).
 # Excludes "emergentintegrations" (Emergent-only package) — chat is gated off in routes_chat.py.
 # pip will pull the remaining transitive deps (starlette, anyio, pymongo, etc.) automatically.
 fastapi==0.110.1

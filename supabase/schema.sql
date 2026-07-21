@@ -1,5 +1,5 @@
 -- =====================================================================
---  AscendAI — Supabase (PostgreSQL) schema
+--  RK AI Labs — Supabase (PostgreSQL) schema
 --  Full application data model + logging / audit / analytics tables.
 --
 --  HOW TO RUN:  Supabase Dashboard -> SQL Editor -> New query ->
@@ -146,7 +146,7 @@ create table if not exists public.posts (
   excerpt           text default '',
   body              text default '',           -- markdown
   cover_image       text default '',
-  author            text default 'AscendAI Team',
+  author            text default 'RK AI Labs Team',
   tags              text[] not null default '{}',
   meta_description  text default '',
   status            post_status not null default 'draft',
@@ -414,7 +414,7 @@ insert into public.categories (name, slug, description, sort_order) values
 on conflict (slug) do nothing;
 
 insert into public.pages (slug, title, meta_description, content) values
-  ('about', 'About AscendAI', 'About AscendAI.', '## Who we are\n\n_(placeholder)_')
+  ('about', 'About RK AI Labs', 'About RK AI Labs.', '## Who we are\n\n_(placeholder)_')
 on conflict (slug) do nothing;
 
 insert into public.posts (slug, title, excerpt, status, published_at, tags) values

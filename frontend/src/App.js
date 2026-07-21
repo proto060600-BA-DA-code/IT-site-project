@@ -30,7 +30,7 @@ import AdminLeads from "@/pages/admin/AdminLeads";
 import { useEffect } from "react";
 
 const PAGE_TITLES = {
-  "/": "IT Business Analysis & AI Product Building",
+  "/": "AI, Software & Digital Transformation",
   "/services": "Services",
   "/about": "About",
   "/contact": "Contact",
@@ -51,10 +51,10 @@ function Layout({ children }) {
     // Per-page browser tab title. Detail pages (service/post/category) can still
     // override this with a more specific title once their data loads.
     const t = isAdmin
-      ? "Admin · AscendAI"
+      ? "Admin · RK AI Labs"
       : PAGE_TITLES[location.pathname]
-      ? `${PAGE_TITLES[location.pathname]} · AscendAI`
-      : "AscendAI — IT Business Analysis & AI Product Building";
+      ? `${PAGE_TITLES[location.pathname]} · RK AI Labs`
+      : "RK AI Labs — AI, Software & Digital Transformation";
     document.title = t;
   }, [location.pathname, isAdmin]);
 
@@ -76,7 +76,7 @@ function AppRoutes() {
         <Route path="/services" element={<ServicesPLP />} />
         <Route path="/services/:slug" element={<ServicePDP />} />
         <Route path="/categories/:slug" element={<CategoryPage />} />
-        <Route path="/about" element={<CmsPage slug="about" fallbackTitle="About AscendAI" fallbackContent="Loading…" />} />
+        <Route path="/about" element={<CmsPage slug="about" fallbackTitle="About RK AI Labs" fallbackContent="Loading…" />} />
         <Route path="/privacy" element={<CmsPage slug="privacy" fallbackTitle="Privacy Policy" fallbackContent="Loading…" />} />
         <Route path="/terms" element={<CmsPage slug="terms" fallbackTitle="Terms & Conditions" fallbackContent="Loading…" />} />
         <Route path="/contact" element={<Contact />} />

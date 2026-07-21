@@ -18,7 +18,7 @@ import routes_cloudinary  # noqa: E402
 import routes_insights  # noqa: E402
 import seed  # noqa: E402
 
-app = FastAPI(title="AscendAI API")
+app = FastAPI(title="RK AI Labs API")
 
 # /api prefixed router
 api_router = APIRouter(prefix="/api")
@@ -26,7 +26,7 @@ api_router = APIRouter(prefix="/api")
 
 @api_router.get("/")
 async def root():
-    return {"service": "AscendAI API", "status": "ok"}
+    return {"service": "RK AI Labs API", "status": "ok"}
 
 
 @api_router.get("/health")

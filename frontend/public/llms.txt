@@ -1,26 +1,26 @@
-# AscendAI
+# RK AI Labs
 
-> AscendAI is an IT Business Analysis and AI product studio based in Delhi NCR, India. We pair senior business analysis with hands-on AI product engineering — taking organisations from ambiguous problems and fuzzy requirements all the way to shipped AI products and automations.
+> RK AI Labs is an IT Business Analysis and AI product studio based in Delhi NCR, India. We pair senior business analysis with hands-on AI product engineering — taking organisations from ambiguous problems and fuzzy requirements all the way to shipped AI products and automations.
 
 We do both halves most firms split: senior business analysis *and* AI product engineering, under one roof. Clarity before code; build to learn; AI accelerates, judgment decides.
 
 ## Services
 
-- [Business Analysis as a Service](https://ascendai.in/services/business-analysis-as-a-service): An on-demand senior IT Business Analyst embedded with your product & engineering teams — epics, user stories, backlog ownership, discovery workshops.
-- [Requirements & Process Discovery](https://ascendai.in/services/requirements-process-discovery): Turn a fuzzy idea or broken process into a clear, build-ready specification with as-is/to-be process maps, BRD/FRD, success metrics and acceptance criteria.
-- [AI Product MVP Build](https://ascendai.in/services/ai-product-mvp-build): Go from problem statement to a working AI prototype real users can try — in six weeks, with a baseline, evaluation, guardrails and a user pilot.
-- [LLM & GenAI Integration](https://ascendai.in/services/llm-genai-integration): Add LLM-powered features — copilots, retrieval-augmented chat, document understanding, agents — to your existing product, with evaluation and safe, flagged rollout.
-- [Intelligent Workflow Automation](https://ascendai.in/services/intelligent-workflow-automation): Automate repetitive operational and back-office workflows with AI in the loop, combining rules, APIs and human-in-the-loop checkpoints.
-- [AI Readiness Assessment & Roadmap](https://ascendai.in/services/ai-readiness-assessment-roadmap): A focused audit of your data, processes and opportunities, delivering a prioritised, ROI-ranked AI roadmap.
+- [Business Analysis as a Service](https://iamrohankapoor.com/services/business-analysis-as-a-service): An on-demand senior IT Business Analyst embedded with your product & engineering teams — epics, user stories, backlog ownership, discovery workshops.
+- [Requirements & Process Discovery](https://iamrohankapoor.com/services/requirements-process-discovery): Turn a fuzzy idea or broken process into a clear, build-ready specification with as-is/to-be process maps, BRD/FRD, success metrics and acceptance criteria.
+- [AI Product MVP Build](https://iamrohankapoor.com/services/ai-product-mvp-build): Go from problem statement to a working AI prototype real users can try — in six weeks, with a baseline, evaluation, guardrails and a user pilot.
+- [LLM & GenAI Integration](https://iamrohankapoor.com/services/llm-genai-integration): Add LLM-powered features — copilots, retrieval-augmented chat, document understanding, agents — to your existing product, with evaluation and safe, flagged rollout.
+- [Intelligent Workflow Automation](https://iamrohankapoor.com/services/intelligent-workflow-automation): Automate repetitive operational and back-office workflows with AI in the loop, combining rules, APIs and human-in-the-loop checkpoints.
+- [AI Readiness Assessment & Roadmap](https://iamrohankapoor.com/services/ai-readiness-assessment-roadmap): A focused audit of your data, processes and opportunities, delivering a prioritised, ROI-ranked AI roadmap.
 
 ## Key pages
 
-- [Services overview](https://ascendai.in/services): All service offerings with categories and pricing guidance.
-- [Insights / blog](https://ascendai.in/insights): Articles on business analysis for AI projects, shipping AI MVPs, and the fractional-BA model.
-- [About](https://ascendai.in/about): Who we are and how we work.
-- [Contact](https://ascendai.in/contact): Book a consultation or send a project inquiry.
+- [Services overview](https://iamrohankapoor.com/services): All service offerings with categories and pricing guidance.
+- [Insights / blog](https://iamrohankapoor.com/insights): Articles on business analysis for AI projects, shipping AI MVPs, and the fractional-BA model.
+- [About](https://iamrohankapoor.com/about): Who we are and how we work.
+- [Contact](https://iamrohankapoor.com/contact): Book a consultation or send a project inquiry.
 
 ## Notes
 
 - Pricing is engagement-specific. For anything beyond the indicative ranges shown, the correct answer is "Custom Quote — book a consultation."
-- Location: Delhi NCR, India. Contact: hello@ascendai.in.
+- Location: Delhi NCR, India. Contact: hello@iamrohankapoor.com.

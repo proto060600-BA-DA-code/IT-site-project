@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     <div data-testid="admin-dashboard">
       <div className="eyebrow mb-3">Console</div>
       <h1 className="text-3xl tracking-tight mb-2">Dashboard</h1>
-      <p className="text-sm text-[var(--ink-soft)] mb-8">Operational snapshot of the AscendAI site.</p>
+      <p className="text-sm text-[var(--ink-soft)] mb-8">Operational snapshot of the RK AI Labs site.</p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" data-testid="dashboard-stats">
         {cards.map((c) => (

@@ -1,4 +1,4 @@
-"""Comprehensive backend tests for AscendAI API."""
+"""Comprehensive backend tests for RK AI Labs API."""
 import os
 import json
 import uuid
@@ -9,7 +9,7 @@ import requests
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://commerce-advisor-ai.preview.emergentagent.com").rstrip("/")
 API = f"{BASE_URL}/api"
 
-ADMIN_EMAIL = "admin@ascendai.in"
+ADMIN_EMAIL = "admin@iamrohankapoor.com"
 ADMIN_PASSWORD = "Admin@12345"
 
 
@@ -151,7 +151,7 @@ class TestCatalog:
         assert r.status_code == 200
         page = r.json()
         assert page["slug"] == "about"
-        assert "AscendAI" in page["content"]
+        assert "RK AI Labs" in page["content"]
 
     def test_pages_privacy_terms(self, session):
         for slug in ["privacy", "terms"]:

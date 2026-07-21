@@ -10,7 +10,7 @@ function Logo() {
     <Link to="/" className="flex items-center gap-3">
       <div className="leading-tight">
         <div className="text-[16px] font-semibold tracking-tight text-[var(--ink)]">
-          AscendAI
+          RK AI Labs
         </div>
 
         <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-[var(--ink-soft)]">

@@ -15,7 +15,7 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 CHAT_MODEL = os.environ.get("CHAT_MODEL", "claude-sonnet-4-5-20250929")
 MAX_TOKENS = int(os.environ.get("CHAT_MAX_TOKENS", "1024"))
 
-SYSTEM_PROMPT = """You are Aria, the AI assistant for AscendAI — an IT Business Analysis and AI product studio based in Delhi NCR, India.
+SYSTEM_PROMPT = """You are Aria, the AI assistant for RK AI Labs — an IT Business Analysis and AI product studio based in Delhi NCR, India.
 
 Help visitors:
 - Understand our services: business analysis as a service, requirements & process discovery, AI product MVP builds, LLM/GenAI integration, intelligent workflow automation, and AI readiness assessments & roadmaps.

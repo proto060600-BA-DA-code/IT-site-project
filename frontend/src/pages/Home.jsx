@@ -162,7 +162,7 @@ export default function Home() {
       <section className="border-b border-[var(--line)]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-20 grid grid-cols-1 md:grid-cols-12 gap-px bg-[var(--line)] border border-[var(--line)]">
           <div className="bg-white md:col-span-7 p-10">
-            <div className="eyebrow mb-3">Why AscendAI</div>
+            <div className="eyebrow mb-3">Why RK AI Labs</div>
             <h2 className="text-4xl tracking-tight">Clarity before code.</h2>
             <p className="text-[var(--ink-soft)] mt-4 max-w-lg leading-relaxed">
               A sharp problem statement and honest acceptance criteria de-risk a build more than any framework. We do both halves — senior business analysis and hands-on AI engineering.
@@ -209,12 +209,12 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          "name": "AscendAI",
+          "name": "RK AI Labs",
           "description": "IT Business Analysis solutions and AI product building",
           "areaServed": "Worldwide",
           "address": { "@type": "PostalAddress", "addressLocality": "Delhi NCR", "addressCountry": "IN" },
           "telephone": "+91-98735-56197",
-          "email": "hello@ascendai.in",
+          "email": "hello@iamrohankapoor.com",
         }) }}
       />
     </div>

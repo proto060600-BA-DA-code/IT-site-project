@@ -16,7 +16,7 @@ async def seed_admin():
         return
     admin = User(
         email=email,
-        name="AscendAI Admin",
+        name="RK AI Labs Admin",
         password_hash=hash_password(password),
         role="admin",
     )
@@ -31,7 +31,7 @@ async def seed_content():
             "title": "What a Business Analyst actually does on an AI project",
             "excerpt": "AI projects fail for the same reason most IT projects fail: fuzzy problems, unclear success criteria and no owner for the trade-offs. Here is where a senior BA earns their keep.",
             "cover_image": "https://images.unsplash.com/photo-1552664730-d307ca884978",
-            "author": "AscendAI Team",
+            "author": "RK AI Labs Team",
             "tags": ["Business Analysis", "AI", "Delivery"],
             "meta_description": "How a senior Business Analyst de-risks an AI product build, from problem framing to acceptance criteria.",
             "status": "published",
@@ -61,7 +61,7 @@ Get those four artifacts right and the build is the easy part.
             "title": "From PRD to prototype: shipping an AI MVP in six weeks",
             "excerpt": "A repeatable six-week cadence for taking an AI product idea from problem statement to a working prototype real users can try.",
             "cover_image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7",
-            "author": "AscendAI Team",
+            "author": "RK AI Labs Team",
             "tags": ["AI Product", "MVP", "Delivery"],
             "meta_description": "A defensible six-week cadence for building an AI MVP, from discovery to a usable prototype.",
             "status": "published",
@@ -92,7 +92,7 @@ Keep the scope brutal, instrument everything, and let the pilot decide.
             "title": "The fractional BA playbook: what good looks like at 20 hours a week",
             "excerpt": "A senior Business Analyst, fractional, is one of the highest-leverage additions a digital or AI team can make. Here is how to set the engagement up to actually ship.",
             "cover_image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
-            "author": "AscendAI Team",
+            "author": "RK AI Labs Team",
             "tags": ["Business Analysis", "Operations"],
             "meta_description": "How to structure a fractional Business Analyst engagement that ships.",
             "status": "published",
@@ -220,13 +220,13 @@ Treating the fractional BA as a part-time project manager. They are not. They ar
     # PAGES (about / privacy / terms)
     pages_seed = [
         {"slug": "about",
-         "title": "About AscendAI",
-         "meta_description": "AscendAI — IT Business Analysis solutions and AI product building, based in Delhi NCR, India.",
+         "title": "About RK AI Labs",
+         "meta_description": "RK AI Labs — IT Business Analysis solutions and AI product building, based in Delhi NCR, India.",
          "content": """> **[PLACEHOLDER — replace with your real story, founder bio and milestones.]**
 
 ## Who we are
 
-AscendAI is an **IT Business Analysis and AI product studio** based in Delhi NCR, India. We help organisations turn ambiguous problems into clear specifications — and then build the AI-powered products and automations that solve them.
+RK AI Labs is an **IT Business Analysis and AI product studio** based in Delhi NCR, India. We help organisations turn ambiguous problems into clear specifications — and then build the AI-powered products and automations that solve them.
 
 Most consultancies stop at advice. Most dev shops start coding before the problem is understood. We do both halves: senior business analysis *and* hands-on AI product engineering, under one roof.
 
@@ -242,12 +242,12 @@ We pair senior Business Analysts with AI engineers to deliver requirements & pro
 """},
         {"slug": "privacy",
          "title": "Privacy Policy",
-         "meta_description": "How AscendAI handles your data.",
+         "meta_description": "How RK AI Labs handles your data.",
          "content": """**Effective date:** January 1, 2026
 
 > **[PLACEHOLDER — have this reviewed by a qualified legal advisor before publishing.]**
 
-AscendAI ("we", "us") respects your privacy. This policy explains what data we collect via ascendai.in (the "Site") and how we use it.
+RK AI Labs ("we", "us") respects your privacy. This policy explains what data we collect via iamrohankapoor.com (the "Site") and how we use it.
 
 ## 1. Information we collect
 - **Contact data** you provide via forms: name, email, phone, company, message.
@@ -266,25 +266,25 @@ We do **not** sell your data. We share it only with:
 - Authorities if required by law.
 
 ## 4. Retention
-Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at privacy@ascendai.in.
+Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at privacy@iamrohankapoor.com.
 
 ## 5. Your rights
-Subject to applicable law, you may request access, correction, deletion and portability of your data. Email privacy@ascendai.in.
+Subject to applicable law, you may request access, correction, deletion and portability of your data. Email privacy@iamrohankapoor.com.
 
 ## 6. Cookies
 We use a minimal session cookie for authentication. No third-party advertising cookies.
 
 ## 7. Contact
-AscendAI, Delhi NCR, India — privacy@ascendai.in
+RK AI Labs, Delhi NCR, India — privacy@iamrohankapoor.com
 """},
         {"slug": "terms",
          "title": "Terms & Conditions",
-         "meta_description": "Terms of use for the AscendAI website.",
+         "meta_description": "Terms of use for the RK AI Labs website.",
          "content": """**Last updated:** January 1, 2026
 
 > **[PLACEHOLDER — have this reviewed by a qualified legal advisor before publishing.]**
 
-By accessing ascendai.in (the "Site") you agree to these Terms.
+By accessing iamrohankapoor.com (the "Site") you agree to these Terms.
 
 ## 1. Use of the Site
 You may use the Site for lawful informational purposes only. You may not scrape, reverse-engineer or attempt to disrupt the Site or our AI assistant.
@@ -293,16 +293,16 @@ You may use the Site for lawful informational purposes only. You may not scrape,
 Content on this Site, including responses from our AI assistant Aria, is provided for general informational purposes and does not constitute professional consulting advice. Engagement letters and signed statements of work govern any actual consulting work.
 
 ## 3. Intellectual property
-All trademarks, logos, copy, designs and code on the Site are owned by AscendAI or our licensors. You may not reproduce them without written permission.
+All trademarks, logos, copy, designs and code on the Site are owned by RK AI Labs or our licensors. You may not reproduce them without written permission.
 
 ## 4. AI assistant disclaimer
 The AI assistant ("Aria") may generate inaccurate or out-of-date information. Do not rely on it for binding decisions. Pricing displayed by Aria is indicative; final pricing is confirmed in writing.
 
 ## 5. Accounts
-You are responsible for safeguarding your account credentials. Notify us immediately at security@ascendai.in of any unauthorized use.
+You are responsible for safeguarding your account credentials. Notify us immediately at security@iamrohankapoor.com of any unauthorized use.
 
 ## 6. Limitation of liability
-To the maximum extent permitted by law, AscendAI is not liable for indirect, incidental or consequential damages arising from your use of the Site.
+To the maximum extent permitted by law, RK AI Labs is not liable for indirect, incidental or consequential damages arising from your use of the Site.
 
 ## 7. Governing law
 These Terms are governed by the laws of India. Disputes will be subject to the exclusive jurisdiction of the courts of Delhi, India.
@@ -311,7 +311,7 @@ These Terms are governed by the laws of India. Disputes will be subject to the e
 We may update these Terms. The "Last updated" date at the top reflects the latest revision.
 
 ## 9. Contact
-legal@ascendai.in
+legal@iamrohankapoor.com
 """},
     ]
     for p in pages_seed:

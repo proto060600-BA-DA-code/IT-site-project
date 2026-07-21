@@ -57,7 +57,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="text-xs font-mono text-white/60">© 2026 AscendAI · All rights reserved</div>
+          <div className="text-xs font-mono text-white/60">© 2026 RK AI Labs · All rights reserved</div>
           <div className="text-xs font-mono text-white/60">Delhi NCR · India</div>
         </div>
       </div>

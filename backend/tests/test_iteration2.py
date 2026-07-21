@@ -9,7 +9,7 @@ import requests
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL").rstrip("/")
 API = f"{BASE_URL}/api"
 
-ADMIN_EMAIL = "admin@ascendai.in"
+ADMIN_EMAIL = "admin@iamrohankapoor.com"
 ADMIN_PASSWORD = "Admin@12345"
 
 SEEDED_SLUGS = [

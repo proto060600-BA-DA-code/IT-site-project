@@ -1,4 +1,4 @@
-# Deploying AscendAI
+# Deploying RK AI Labs
 
 Your app has three parts that each need a home:
 
@@ -41,7 +41,7 @@ Do them **in this order** — each step needs a URL from the previous one. I've 
    | Key | Value |
    |-----|-------|
    | `MONGO_URL` | the Atlas string from Step 1 |
-   | `DB_NAME` | `ascendai` |
+   | `DB_NAME` | `rkailabs` |
    | `JWT_SECRET` | any long random string |
    | `ADMIN_EMAIL` | the email you want to log in with |
    | `ADMIN_PASSWORD` | a strong password |
@@ -52,7 +52,7 @@ Do them **in this order** — each step needs a URL from the previous one. I've 
    | `CHAT_MODEL` | `claude-sonnet-4-5-20250929` |
 
 5. **Create Web Service.** Watch the logs — when you see `Application startup complete` and `Seed completed`, it's live.
-6. Copy the backend URL Render gives you, e.g. `https://ascendai-backend.onrender.com`. **Keep it** for Step 3.
+6. Copy the backend URL Render gives you, e.g. `https://rkailabs-backend.onrender.com`. **Keep it** for Step 3.
 
 > Test it: open `https://<your-render-url>/api/health` — you should see `{"ok": true}`.
 > (Heads-up: Render's free tier sleeps after ~15 min idle, so the first request after a nap takes ~30s to wake.)
@@ -70,7 +70,7 @@ Do them **in this order** — each step needs a URL from the previous one. I've 
 
    | Key | Value |
    |-----|-------|
-   | `REACT_APP_BACKEND_URL` | your Render backend URL from Step 2 (e.g. `https://ascendai-backend.onrender.com`) |
+   | `REACT_APP_BACKEND_URL` | your Render backend URL from Step 2 (e.g. `https://rkailabs-backend.onrender.com`) |
 
 4. **Deploy.** When it finishes, Vercel gives you your site URL, e.g. `https://claude-it-website-project.vercel.app`.
 

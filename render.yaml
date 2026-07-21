@@ -1,10 +1,10 @@
-# Render Blueprint for the AscendAI FastAPI backend.
+# Render Blueprint for the RK AI Labs FastAPI backend.
 # Optional convenience: in Render you can click "New +" -> "Blueprint" and point
 # it at this repo, OR just create a Web Service manually with the settings shown
 # in DEPLOY.md. Either way, fill the env vars marked "sync: false" in the dashboard.
 services:
   - type: web
-    name: ascendai-backend
+    name: rkailabs-backend
     runtime: python
     rootDir: backend
     plan: free
@@ -16,7 +16,7 @@ services:
       - key: MONGO_URL          # from MongoDB Atlas (set in dashboard)
         sync: false
       - key: DB_NAME
-        value: ascendai
+        value: rkailabs
       - key: JWT_SECRET          # auto-generated secure value
         generateValue: true
       - key: ADMIN_EMAIL         # your admin login email

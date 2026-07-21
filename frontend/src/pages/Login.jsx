@@ -28,7 +28,7 @@ export default function Login() {
     <div className="min-h-[70vh] grid grid-cols-1 lg:grid-cols-2" data-testid="login-page">
       <div className="hidden lg:block bg-[var(--brand-teal)] text-white relative grain overflow-hidden">
         <div className="absolute inset-0 p-12 flex flex-col justify-between">
-          <div className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--brand-amber-light)]">AscendAI · Sign in</div>
+          <div className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--brand-amber-light)]">RK AI Labs · Sign in</div>
           <div>
             <div className="text-3xl tracking-tight max-w-md">"They framed the problem, then built it. We had a working AI prototype in six weeks."</div>
             <div className="text-xs font-mono uppercase tracking-wider text-white/60 mt-4">— Head of Product, SaaS scale-up</div>

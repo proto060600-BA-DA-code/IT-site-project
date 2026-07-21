@@ -1,4 +1,4 @@
-# AscendAI — robots.txt
+# RK AI Labs — robots.txt
 # NOTE: update the domain below to your live domain before deploying.
 
 User-agent: *
@@ -28,4 +28,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://ascendai.in/api/sitemap.xml
+Sitemap: https://iamrohankapoor.com/api/sitemap.xml

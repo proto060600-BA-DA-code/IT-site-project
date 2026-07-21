@@ -1,4 +1,4 @@
-# AscendAI — PRD
+# RK AI Labs — PRD
 
 ## Problem statement (verbatim)
 Create a complete website for providing IT business analysis & AI product building. Owner is an IT Business Analyst who also builds AI products. Website should contain: signin/login, header with nav, category tree, homepage with marketing banners + product/service carousel + logo/favicon, proper footer (About/Contact/Privacy/Terms quick links, phone/email/address), PLP/PDP, lead capture form, integrated AI chat bot widget, CMS for frontend data, robots.txt + sitemap, SEO + schema markup, backend logic with Admin dashboard.
@@ -7,7 +7,7 @@ Create a complete website for providing IT business analysis & AI product buildi
 - AI chatbot: **Claude Sonnet 4.5** via **Emergent LLM Universal Key** (Ollama fallback declined)
 - Auth: **JWT-based custom email/password**
 - CMS: **Built-in custom CMS in Admin Dashboard**
-- Brand: placeholders (**AscendAI**)
+- Brand: placeholders (**RK AI Labs**)
 - Leads: **Stored in DB + Admin viewable** (no email integration)
 
 ## Architecture

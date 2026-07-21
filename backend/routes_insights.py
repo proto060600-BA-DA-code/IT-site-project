@@ -13,7 +13,7 @@ class Post(BaseDoc):
     excerpt: str = ""
     body: str = ""  # markdown
     cover_image: Optional[str] = ""
-    author: str = "AscendAI Team"
+    author: str = "RK AI Labs Team"
     tags: List[str] = []
     meta_description: Optional[str] = ""
     status: str = "draft"  # draft | published
@@ -27,7 +27,7 @@ class PostIn(BaseModel):
     excerpt: str = ""
     body: str = ""
     cover_image: Optional[str] = ""
-    author: str = "AscendAI Team"
+    author: str = "RK AI Labs Team"
     tags: List[str] = []
     meta_description: Optional[str] = ""
     status: str = "draft"
