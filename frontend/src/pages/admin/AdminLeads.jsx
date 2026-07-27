@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -9,8 +9,11 @@ export default function AdminLeads() {
   const [expanded, setExpanded] = useState(null);
   const [filter, setFilter] = useState("all");
 
-  const load = () => api.get("/admin/leads").then((r) => setLeads(r.data));
-  useEffect(() => { load(); }, []);
+  const load = useCallback(
+    () => api.get("/admin/leads").then((r) => setLeads(r.data)),
+    []
+  );
+  useEffect(() => { load(); }, [load]);
 
   const setStatus = async (id, status) => {
     await api.put(`/admin/leads/${id}`, { status });

@@ -1,5 +1,5 @@
 // Generic table-based admin CRUD for banners/categories/services/pages/posts
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { PencilSimple, Trash, Plus, X } from "@phosphor-icons/react";
@@ -18,10 +18,12 @@ export default function AdminCRUD({
   const [editing, setEditing] = useState(null); // null | item | "new"
   const [form, setForm] = useState(defaults);
 
-  const load = () =>
-    api.get(`/admin/${resource}`).then((r) => setItems(r.data));
+  const load = useCallback(
+    () => api.get(`/admin/${resource}`).then((r) => setItems(r.data)),
+    [resource]
+  );
 
-  useEffect(() => { load(); }, [resource]);
+  useEffect(() => { load(); }, [load]);
 
   const startNew = () => { setForm(defaults); setEditing("new"); };
   const startEdit = (it) => {
