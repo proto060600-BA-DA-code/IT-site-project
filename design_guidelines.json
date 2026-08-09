@@ -31,13 +31,19 @@
   },
   "typography": {
     "headings": {
-      "font_family": "Cabinet Grotesk, sans-serif",
-      "weights": ["300", "800"],
-      "tracking": "tracking-tight",
-      "rule": "Never use Inter or generic fonts for headings"
+      "font_family": "var(--font-sans) — San Francisco via -apple-system, with native OS fallbacks",
+      "weights": ["600", "700"],
+      "tracking": "-0.028em at h1, easing to -0.014em at h4; SF needs tighter tracking as size grows",
+      "rule": "System font only. No webfonts — do not reintroduce a Google Fonts link."
     },
     "body": {
-      "font_family": "IBM Plex Sans, sans-serif",
+      "font_family": "var(--font-sans) — San Francisco via -apple-system, with native OS fallbacks",
+      "weights": ["400", "500"],
+      "tracking": "-0.011em",
+      "line_height": "1.6"
+    },
+    "mono": {
+      "font_family": "var(--font-mono) — SF Mono via ui-monospace, with native OS fallbacks",
       "weights": ["400", "500"]
     },
     "sizes": {
