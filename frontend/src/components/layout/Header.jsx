@@ -9,11 +9,11 @@ function Logo() {
   return (
     <Link to="/" className="flex items-center gap-3">
       <div className="leading-tight">
-        <div className="text-[16px] font-semibold tracking-tight text-[var(--ink)]">
+        <div className="text-[16px] font-semibold tracking-tight text-[var(--off-white)]">
           RK AI Labs
         </div>
 
-        <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-[var(--ink-soft)]">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
           Business & AI Solutions
         </div>
       </div>
@@ -32,22 +32,22 @@ export default function Header() {
   }, []);
 
   const navLinkCls = ({ isActive }) =>
-    `text-sm font-medium tracking-tight transition-colors ${isActive ? "text-[var(--brand-teal)]" : "text-[var(--ink-soft)] hover:text-[var(--brand-teal)]"}`;
+    `text-sm font-medium tracking-tight transition-colors ${isActive ? "text-[var(--gold)]" : "text-[var(--slate-200)] hover:text-[var(--gold)]"}`;
 
   return (
     <>
-      <div className="bg-[var(--brand-teal)] text-white text-xs">
+      <div className="bg-[var(--navy-900)] text-[var(--slate-200)] text-xs">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-2 flex justify-between">
           <span>
             Business Analysis • AI Solutions • Digital Transformation
           </span>
-          <span className="hidden md:block">
+          <span className="hidden md:block text-[var(--gold)]">
             Free Discovery Call Available
           </span>
         </div>
       </div>
 
-      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-[var(--line)]">
+      <header className="sticky top-0 z-40 bg-[var(--navy-950)]/95 backdrop-blur border-b border-[var(--line-dark)]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Logo />
@@ -69,12 +69,12 @@ export default function Header() {
                 <span className="flex items-center gap-1">Services <CaretDown size={12} weight="bold" /></span>
               </NavLink>
               {catOpen && (
-                <div className="absolute top-full left-0 mt-0 w-[520px] bg-white border border-[var(--line)] shadow-lg p-6 grid grid-cols-2 gap-1">
+                <div className="absolute top-full left-0 mt-0 w-[520px] bg-[var(--navy-900)] border border-[var(--line-dark)] shadow-2xl p-6 grid grid-cols-2 gap-1">
                   <Link
                     to="/services"
-                    className="col-span-2 flex items-center justify-between px-3 py-2.5 hover:bg-[var(--paper-surface)] border-b border-[var(--line)] mb-1"
+                    className="col-span-2 flex items-center justify-between px-3 py-2.5 hover:bg-white/5 border-b border-[var(--line-dark)] mb-1"
                   >
-                    <span className="text-sm font-semibold text-[var(--brand-teal)]">
+                    <span className="text-sm font-semibold text-[var(--gold)]">
                       All Services
                     </span>
                   </Link>
@@ -83,13 +83,13 @@ export default function Header() {
                     <Link
                       key={c.id}
                       to={`/categories/${c.slug}`}
-                      className="px-3 py-2.5 hover:bg-[var(--paper-surface)]"
+                      className="px-3 py-2.5 hover:bg-white/5"
                     >
-                      <div className="text-sm font-medium">
+                      <div className="text-sm font-medium text-[var(--off-white)]">
                         {c.name}
                       </div>
 
-                      <div className="text-xs text-[var(--ink-soft)]">
+                      <div className="text-xs on-dark-muted">
                         {c.description}
                       </div>
                     </Link>
@@ -107,19 +107,19 @@ export default function Header() {
           {user ? (
             <div className="hidden md:flex items-center gap-3">
               {user.role === "admin" && (
-                <Link to="/admin" data-testid="nav-admin" className="text-xs font-mono uppercase tracking-wider text-[var(--brand-teal)] border border-[var(--brand-teal)] px-3 py-1.5 hover:bg-[var(--brand-teal)] hover:text-white transition-colors">
+                <Link to="/admin" data-testid="nav-admin" className="text-xs font-mono uppercase tracking-wider text-[var(--gold)] border border-[var(--gold)] px-3 py-1.5 hover:bg-[var(--gold)] hover:text-[var(--navy-950)] transition-colors">
                   Admin
                 </Link>
               )}
-              <div className="flex items-center gap-2 text-sm text-[var(--ink-soft)]">
+              <div className="flex items-center gap-2 text-sm text-[var(--slate-200)]">
                 <UserIcon size={16} /> {user.name.split(" ")[0]}
               </div>
-              <button data-testid="logout-btn" onClick={logout} className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
+              <button data-testid="logout-btn" onClick={logout} className="text-sm text-[var(--slate-200)] hover:text-[var(--gold)]">
                 Logout
               </button>
             </div>
           ) : (
-            <Link to="/login" data-testid="nav-login" className="hidden md:inline-block text-sm font-medium text-[var(--ink-soft)] hover:text-[var(--brand-teal)]">
+            <Link to="/login" data-testid="nav-login" className="hidden md:inline-block text-sm font-medium text-[var(--slate-200)] hover:text-[var(--gold)]">
               Sign in
             </Link>
           )}
@@ -129,7 +129,7 @@ export default function Header() {
           <button
             data-testid="mobile-menu-toggle"
             onClick={() => setOpen(!open)}
-            className="lg:hidden p-2 -mr-2"
+            className="lg:hidden p-2 -mr-2 text-[var(--off-white)]"
             aria-label="menu"
           >
             {open ? <X size={22} /> : <List size={22} />}
@@ -138,17 +138,17 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-[var(--line)] bg-white" data-testid="mobile-nav">
+        <div className="lg:hidden border-t border-[var(--line-dark)] bg-[var(--navy-950)] text-[var(--slate-200)]" data-testid="mobile-nav">
           <div className="px-6 py-4 flex flex-col gap-3">
             <Link to="/" onClick={() => setOpen(false)} className="py-1.5 text-sm">Home</Link>
             <Link to="/services" onClick={() => setOpen(false)} className="py-1.5 text-sm">Services</Link>
             <Link to="/about" onClick={() => setOpen(false)} className="py-1.5 text-sm">About</Link>
             <Link to="/insights" onClick={() => setOpen(false)} className="py-1.5 text-sm">Insights</Link>
             <Link to="/contact" onClick={() => setOpen(false)} className="py-1.5 text-sm">Contact</Link>
-            <div className="hairline my-2" />
+            <div className="hairline my-2" style={{ background: "var(--line-dark)" }} />
             {user ? (
               <>
-                {user.role === "admin" && <Link to="/admin" onClick={() => setOpen(false)} className="py-1.5 text-sm text-[var(--brand-teal)]">Admin</Link>}
+                {user.role === "admin" && <Link to="/admin" onClick={() => setOpen(false)} className="py-1.5 text-sm text-[var(--gold)]">Admin</Link>}
                 <button onClick={() => { logout(); setOpen(false); }} className="text-left py-1.5 text-sm">Logout</button>
               </>
             ) : (

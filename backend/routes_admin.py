@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List
 from db import db
 from models import (
-    Banner, BannerIn, Category, CategoryIn, Service, ServiceIn,
+    Banner, BannerIn, Category, CategoryIn, Client, ClientIn, Service, ServiceIn,
     Page, PageIn, Lead, LeadUpdate, now_iso,
 )
 from auth import require_admin
@@ -40,6 +40,39 @@ async def admin_delete_banner(banner_id: str):
     r = await db.banners.delete_one({"id": banner_id})
     if r.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Banner not found")
+    return {"ok": True}
+
+
+# ---- CLIENTS ("trusted by" band) ----
+@router.get("/clients", response_model=List[Client])
+async def admin_list_clients():
+    docs = await db.clients.find({}, {"_id": 0}).sort("order", 1).to_list(500)
+    return [Client(**d) for d in docs]
+
+
+@router.post("/clients", response_model=Client)
+async def admin_create_client(payload: ClientIn):
+    c = Client(**payload.model_dump())
+    await db.clients.insert_one(c.model_dump())
+    return c
+
+
+@router.put("/clients/{client_id}", response_model=Client)
+async def admin_update_client(client_id: str, payload: ClientIn):
+    update = payload.model_dump()
+    update["updated_at"] = now_iso()
+    res = await db.clients.find_one_and_update({"id": client_id}, {"$set": update},
+                                               return_document=True, projection={"_id": 0})
+    if not res:
+        raise HTTPException(status_code=404, detail="Client not found")
+    return Client(**res)
+
+
+@router.delete("/clients/{client_id}")
+async def admin_delete_client(client_id: str):
+    r = await db.clients.delete_one({"id": client_id})
+    if r.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Client not found")
     return {"ok": True}
 
 

@@ -22,6 +22,7 @@ import NotFound from "@/pages/NotFound";
 import AdminLayout from "@/pages/admin/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminBanners from "@/pages/admin/AdminBanners";
+import AdminClients from "@/pages/admin/AdminClients";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminServices from "@/pages/admin/AdminServices";
 import AdminPages from "@/pages/admin/AdminPages";
@@ -88,6 +89,7 @@ function AppRoutes() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="banners" element={<AdminBanners />} />
+          <Route path="clients" element={<AdminClients />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="pages" element={<AdminPages />} />

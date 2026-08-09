@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from typing import List, Optional
 from db import db
-from models import Banner, Category, Service, Page, Lead, LeadIn, now_iso
+from models import Banner, Category, Client, Service, Page, Lead, LeadIn, now_iso
 from email_service import send_lead_notification
 
 router = APIRouter(tags=["catalog"])
@@ -11,6 +11,13 @@ router = APIRouter(tags=["catalog"])
 async def list_banners():
     docs = await db.banners.find({"active": True}, {"_id": 0}).sort("order", 1).to_list(100)
     return [Banner(**d) for d in docs]
+
+
+@router.get("/clients", response_model=List[Client])
+async def list_clients():
+    """Public list for the 'Trusted by' band. Empty until real clients are added."""
+    docs = await db.clients.find({"active": True}, {"_id": 0}).sort("order", 1).to_list(50)
+    return [Client(**d) for d in docs]
 
 
 @router.get("/categories", response_model=List[Category])

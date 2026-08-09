@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { House, Image, Tree, Briefcase, FileText, Users, SignOut } from "@phosphor-icons/react";
+import { House, Image, Tree, Briefcase, FileText, Users, Buildings, SignOut } from "@phosphor-icons/react";
 
 export default function AdminLayout() {
   const { user, loading, logout } = useAuth();
@@ -35,6 +35,7 @@ export default function AdminLayout() {
         <nav className="flex-1 py-4">
           <NavLink to="/admin" end className={navCls} data-testid="admin-nav-dashboard"><House size={16} /> Dashboard</NavLink>
           <NavLink to="/admin/banners" className={navCls} data-testid="admin-nav-banners"><Image size={16} /> Banners</NavLink>
+          <NavLink to="/admin/clients" className={navCls} data-testid="admin-nav-clients"><Buildings size={16} /> Clients</NavLink>
           <NavLink to="/admin/categories" className={navCls} data-testid="admin-nav-categories"><Tree size={16} /> Categories</NavLink>
           <NavLink to="/admin/services" className={navCls} data-testid="admin-nav-services"><Briefcase size={16} /> Services</NavLink>
           <NavLink to="/admin/pages" className={navCls} data-testid="admin-nav-pages"><FileText size={16} /> Pages (CMS)</NavLink>

@@ -3,17 +3,37 @@
 @tailwind utilities;
 
 :root {
-    /* Brand */
-    --brand-teal: #093D45;
-    --brand-teal-light: #13626C;
-    --brand-amber: #D97706;
-    --brand-amber-light: #F59E0B;
-    --ink: #020617;
-    --ink-soft: #475569;
+    /* ── Midnight Elegance ────────────────────────────────────────────
+       Bold. Sophisticated. Confident.
+       Deep navy anchors, a single gold accent, off-white paper. */
+    --navy-950: #0D1321;   /* near-black navy — hero, footer, nav      */
+    --navy-900: #1B263B;   /* dark navy — raised surfaces on dark      */
+    --slate-600: #415A77;  /* slate blue-gray — muted text on dark     */
+    --slate-200: #C9D2DE;  /* pale gray — hairlines/labels on dark     */
+    --gold: #C8A06A;       /* brass accent — CTAs, eyebrows. Use once. */
+    --gold-deep: #A8814D;  /* gold hover/press                         */
+    --off-white: #FAFAFA;
+
+    /* Semantic brand tokens */
+    --brand-ink: var(--navy-950);
+    --brand-ink-light: var(--navy-900);
+    --brand-accent: var(--gold);
+    --brand-accent-deep: var(--gold-deep);
+
+    /* Legacy aliases — existing components reference these names.
+       Kept pointing at the new palette so nothing breaks. */
+    --brand-teal: var(--navy-950);
+    --brand-teal-light: var(--navy-900);
+    --brand-amber: var(--gold-deep);
+    --brand-amber-light: var(--gold);
+
+    --ink: #0D1321;
+    --ink-soft: #4A5568;
     --paper: #FFFFFF;
-    --paper-muted: #F1F5F9;
-    --paper-surface: #F8FAFC;
-    --line: #E2E8F0;
+    --paper-muted: #F1F2F4;
+    --paper-surface: var(--off-white);
+    --line: #E4E6EA;
+    --line-dark: rgba(201, 210, 222, 0.16);
 
     /* Typography — San Francisco (Apple system font), with native
        per-platform fallbacks. No webfont download required. */
@@ -25,25 +45,26 @@
 
 @layer base {
     :root {
+        /* shadcn tokens, retuned to Midnight Elegance */
         --background: 0 0% 100%;
-        --foreground: 222 47% 4%;
+        --foreground: 222 43% 9%;
         --card: 0 0% 100%;
-        --card-foreground: 222 47% 4%;
+        --card-foreground: 222 43% 9%;
         --popover: 0 0% 100%;
-        --popover-foreground: 222 47% 4%;
-        --primary: 188 75% 16%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 210 40% 96%;
-        --secondary-foreground: 222 47% 4%;
-        --muted: 210 40% 96%;
-        --muted-foreground: 215 19% 35%;
-        --accent: 38 92% 50%;
-        --accent-foreground: 222 47% 4%;
+        --popover-foreground: 222 43% 9%;
+        --primary: 222 43% 9%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 220 14% 96%;
+        --secondary-foreground: 222 43% 9%;
+        --muted: 220 14% 96%;
+        --muted-foreground: 218 17% 32%;
+        --accent: 35 46% 60%;
+        --accent-foreground: 222 43% 9%;
         --destructive: 0 84% 60%;
         --destructive-foreground: 0 0% 100%;
-        --border: 214 32% 91%;
-        --input: 214 32% 91%;
-        --ring: 188 75% 16%;
+        --border: 220 11% 91%;
+        --input: 220 11% 91%;
+        --ring: 35 46% 60%;
         --radius: 0.125rem;
     }
 }
@@ -111,8 +132,36 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
     content: "";
     width: 28px;
     height: 1px;
-    background: var(--brand-amber);
+    background: var(--gold);
 }
+
+/* Eyebrow on a dark band — gold on navy */
+.eyebrow-invert {
+    color: var(--gold);
+}
+.eyebrow-invert::before {
+    background: var(--gold);
+}
+
+/* Centered variant used by the "what we do" style section headers */
+.eyebrow-center {
+    justify-content: center;
+}
+
+/* ── Dark band helpers ─────────────────────────────────────────────── */
+.band-dark {
+    background: var(--navy-950);
+    color: var(--off-white);
+}
+.band-dark h1,
+.band-dark h2,
+.band-dark h3,
+.band-dark h4 { color: var(--off-white); }
+.band-dark .hairline { background: var(--line-dark); }
+
+.on-dark-soft { color: var(--slate-200); }
+.on-dark-muted { color: rgba(201, 210, 222, 0.72); }
+.rule-dark { border-color: var(--line-dark) !important; }
 
 /* Buttons */
 .btn-primary {
@@ -157,6 +206,23 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
 .btn-ghost:hover {
     background: var(--paper-surface);
     border-color: var(--brand-teal);
+}
+
+/* Ghost button sitting on a dark band — e.g. "Watch Overview" */
+.btn-ghost-invert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: transparent;
+    color: var(--off-white);
+    padding: 0.85rem 1.5rem;
+    border: 1px solid rgba(201, 210, 222, 0.32);
+    font-weight: 500;
+    transition: background-color 200ms ease, border-color 200ms ease;
+}
+.btn-ghost-invert:hover {
+    background: rgba(201, 210, 222, 0.10);
+    border-color: var(--gold);
 }
 
 /* Hairline divider used across sections */

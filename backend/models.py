@@ -72,6 +72,25 @@ class BannerIn(BaseModel):
     active: bool = True
 
 
+# ------- CLIENT (the "trusted by" band) -------
+# Intentionally seeded empty. The homepage band renders only when at least
+# one active client exists, so no placeholder logos can ever ship.
+class Client(BaseDoc):
+    name: str
+    logo_url: Optional[str] = ""
+    website: Optional[str] = ""
+    order: int = 0
+    active: bool = True
+
+
+class ClientIn(BaseModel):
+    name: str
+    logo_url: Optional[str] = ""
+    website: Optional[str] = ""
+    order: int = 0
+    active: bool = True
+
+
 # ------- CATEGORY (tree) -------
 class Category(BaseDoc):
     name: str
