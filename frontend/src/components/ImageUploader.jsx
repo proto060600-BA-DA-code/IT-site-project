@@ -1,11 +1,15 @@
 // Cloudinary-backed image uploader. Used inside admin forms.
+// Supports click-to-upload, drag-and-drop, and picking from the media library.
 import { useState, useRef } from "react";
-import { api, API_BASE } from "@/lib/api";
+import { api } from "@/lib/api";
 import { toast } from "sonner";
-import { UploadSimple, Image as ImageIcon, X } from "@phosphor-icons/react";
+import { UploadSimple, Image as ImageIcon, X, Images } from "@phosphor-icons/react";
+import { MediaPicker } from "@/components/admin/MediaLibrary";
 
 export default function ImageUploader({ value, onChange, folder = "uploads", testid = "image-uploader" }) {
   const [busy, setBusy] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [picking, setPicking] = useState(false);
   const inputRef = useRef(null);
 
   const upload = async (file) => {
@@ -36,6 +40,21 @@ export default function ImageUploader({ value, onChange, folder = "uploads", tes
         throw new Error(json.error?.message || "Upload failed");
       }
       onChange(json.secure_url);
+      // Register in the media library so the file is reusable elsewhere.
+      // Non-fatal: the field still works if the catalogue write fails.
+      try {
+        await api.post("/admin/media", {
+          filename: file.name,
+          url: json.secure_url,
+          thumb_url: json.secure_url,
+          public_id: json.public_id || "",
+          folder,
+          mime: file.type,
+          bytes: json.bytes || file.size,
+          width: json.width || 0,
+          height: json.height || 0,
+        });
+      } catch { /* catalogue is best-effort */ }
       toast.success("Image uploaded.");
     } catch (e) {
       toast.error(e?.response?.data?.detail || e?.message || "Upload failed");
@@ -46,10 +65,20 @@ export default function ImageUploader({ value, onChange, folder = "uploads", tes
   };
 
   return (
-    <div data-testid={testid} className="space-y-2">
+    <div
+      data-testid={testid}
+      className="space-y-2"
+      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={(e) => { e.preventDefault(); setDragOver(false); upload(e.dataTransfer.files?.[0]); }}
+    >
       <div className="flex items-start gap-3">
-        <div className="w-28 h-20 border border-[var(--line)] bg-[var(--paper-surface)] flex items-center justify-center overflow-hidden shrink-0">
-          {value ? (
+        <div className={`w-28 h-20 border bg-[var(--paper-surface)] flex items-center justify-center overflow-hidden shrink-0 transition-colors ${
+          dragOver ? "border-[var(--gold)] border-dashed border-2" : "border-[var(--line)]"
+        }`}>
+          {dragOver ? (
+            <span className="text-[10px] uppercase tracking-wider text-[var(--gold)]">Drop</span>
+          ) : value ? (
             <img src={value} alt="preview" className="w-full h-full object-cover" />
           ) : (
             <ImageIcon size={20} className="text-[var(--ink-soft)]" />
@@ -74,6 +103,14 @@ export default function ImageUploader({ value, onChange, folder = "uploads", tes
             >
               <UploadSimple size={12} weight="bold" /> {busy ? "Uploading…" : "Upload"}
             </button>
+            <button
+              type="button"
+              data-testid={`${testid}-library`}
+              onClick={() => setPicking(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[var(--ink-soft)] border border-[var(--line)] px-3 py-1.5 hover:border-[var(--brand-ink)] hover:text-[var(--ink)] transition-colors"
+            >
+              <Images size={12} weight="bold" /> Library
+            </button>
             {value && (
               <button
                 type="button"
@@ -95,6 +132,8 @@ export default function ImageUploader({ value, onChange, folder = "uploads", tes
           />
         </div>
       </div>
+
+      {picking && <MediaPicker onClose={() => setPicking(false)} onPick={onChange} />}
     </div>
   );
 }

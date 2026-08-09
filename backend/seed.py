@@ -320,5 +320,11 @@ legal@iamrohankapoor.com
 
 
 async def run_all():
+    # Roles first: seed_admin attaches the admin role to the seeded user.
+    from routes_rbac import seed_roles
+    from routes_layouts import seed_layouts
+
+    await seed_roles()
     await seed_admin()
     await seed_content()
+    await seed_layouts()

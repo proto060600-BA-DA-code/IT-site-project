@@ -23,6 +23,10 @@ import AdminLayout from "@/pages/admin/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminBanners from "@/pages/admin/AdminBanners";
 import AdminClients from "@/pages/admin/AdminClients";
+import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminRoles from "@/pages/admin/AdminRoles";
+import AdminMedia from "@/pages/admin/AdminMedia";
+import AdminPageBuilder from "@/pages/admin/AdminPageBuilder";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminServices from "@/pages/admin/AdminServices";
 import AdminPages from "@/pages/admin/AdminPages";
@@ -95,6 +99,10 @@ function AppRoutes() {
           <Route path="pages" element={<AdminPages />} />
           <Route path="posts" element={<AdminPosts />} />
           <Route path="leads" element={<AdminLeads />} />
+          <Route path="media" element={<AdminMedia />} />
+          <Route path="page-builder" element={<AdminPageBuilder />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="roles" element={<AdminRoles />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

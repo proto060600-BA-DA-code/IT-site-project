@@ -13,6 +13,22 @@ async def list_banners():
     return [Banner(**d) for d in docs]
 
 
+@router.get("/layouts/{page}")
+async def public_layout(page: str):
+    """Public read of a composed page layout.
+
+    Returns only visible blocks. An empty list is the signal for the frontend
+    to fall back to its hardcoded layout, so an unbuilt page still renders.
+    """
+    doc = await db.layouts.find_one({"page": page, "published": True}, {"_id": 0})
+    if not doc:
+        return {"page": page, "blocks": []}
+    return {
+        "page": page,
+        "blocks": [b for b in (doc.get("blocks") or []) if b.get("visible", True)],
+    }
+
+
 @router.get("/clients", response_model=List[Client])
 async def list_clients():
     """Public list for the 'Trusted by' band. Empty until real clients are added."""

@@ -5,9 +5,12 @@ from models import (
     Banner, BannerIn, Category, CategoryIn, Client, ClientIn, Service, ServiceIn,
     Page, PageIn, Lead, LeadUpdate, now_iso,
 )
-from auth import require_admin
+from auth import enforce_admin_rbac
 
-router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(require_admin)])
+# One blanket dependency covers every route below: it resolves the caller's
+# permission matrix and checks it against the path's resource + the method's
+# action. New admin routes are protected automatically.
+router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(enforce_admin_rbac)])
 
 
 # ---- BANNERS ----
@@ -41,6 +44,19 @@ async def admin_delete_banner(banner_id: str):
     if r.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Banner not found")
     return {"ok": True}
+
+
+# Roles, users, media, layouts and reports live in their own modules but hang
+# off this router so they inherit the RBAC guard above.
+from routes_rbac import router as rbac_router          # noqa: E402
+from routes_media import router as media_router        # noqa: E402
+from routes_layouts import router as layouts_router    # noqa: E402
+from routes_reports import router as reports_router    # noqa: E402
+
+router.include_router(rbac_router)
+router.include_router(media_router)
+router.include_router(layouts_router)
+router.include_router(reports_router)
 
 
 # ---- CLIENTS ("trusted by" band) ----

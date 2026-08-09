@@ -2,8 +2,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
-import { PencilSimple, Trash, Plus, X } from "@phosphor-icons/react";
+import { PencilSimple, Trash, Plus, X, DownloadSimple } from "@phosphor-icons/react";
 import ImageUploader from "@/components/ImageUploader";
+import { SortableList, SortableItem, DragHandle } from "@/components/admin/Sortable";
+import { downloadCsv } from "@/lib/download";
 
 export default function AdminCRUD({
   resource,
@@ -13,10 +15,14 @@ export default function AdminCRUD({
   defaults,
   testidPrefix,
   imageFolder = "uploads",
+  // Set false for collections with no `order` field (e.g. leads).
+  sortable = true,
+  exportable = true,
 }) {
   const [items, setItems] = useState([]);
   const [editing, setEditing] = useState(null); // null | item | "new"
   const [form, setForm] = useState(defaults);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   const load = useCallback(
     () => api.get(`/admin/${resource}`).then((r) => setItems(r.data)),
@@ -63,46 +69,98 @@ export default function AdminCRUD({
     catch (e) { toast.error("Delete failed"); }
   };
 
+  // Reordering writes the new index to each row's `order` field. Optimistic:
+  // the list moves immediately, and reloads from the server once persisted.
+  const reorder = async (next) => {
+    setItems(next);
+    setSavingOrder(true);
+    try {
+      await Promise.all(
+        next.map((it, i) =>
+          it.order === i ? null : api.put(`/admin/${resource}/${it.id}`, { ...it, order: i })
+        ).filter(Boolean)
+      );
+      toast.success("Order saved");
+      await load();
+    } catch (e) {
+      toast.error("Could not save the new order");
+      await load();
+    } finally {
+      setSavingOrder(false);
+    }
+  };
+
+  const canSort = sortable && "order" in (defaults || {});
+
   return (
     <div data-testid={`admin-${resource}-page`}>
       <div className="flex items-end justify-between mb-6 gap-4 flex-wrap">
         <div>
           <div className="eyebrow mb-2">Manage</div>
           <h1 className="text-3xl tracking-tight">{title}</h1>
+          {canSort && (
+            <p className="text-sm text-[var(--ink-soft)] mt-1">
+              {savingOrder ? "Saving order…" : "Drag the handle to reorder — the new order saves automatically."}
+            </p>
+          )}
         </div>
-        <button onClick={startNew} data-testid={`${testidPrefix}-new`} className="btn-accent">
-          <Plus size={14} weight="bold" /> New
-        </button>
+        <div className="flex gap-2">
+          {exportable && (
+            <button
+              onClick={() => downloadCsv(`/admin/reports/export/${resource}`, `${resource}.csv`)}
+              data-testid={`${testidPrefix}-export`}
+              className="btn-ghost !py-2 !px-4 text-sm"
+            >
+              <DownloadSimple size={14} weight="bold" /> Export CSV
+            </button>
+          )}
+          <button onClick={startNew} data-testid={`${testidPrefix}-new`} className="btn-accent">
+            <Plus size={14} weight="bold" /> New
+          </button>
+        </div>
       </div>
 
       <div className="bg-white border border-[var(--line)] overflow-x-auto">
         <table className="w-full text-sm" data-testid={`${testidPrefix}-table`}>
           <thead className="bg-[var(--paper-surface)] border-b border-[var(--line)]">
             <tr>
+              {canSort && <th className="w-10" />}
               {columns.map((c) => (
                 <th key={c.key} className="text-left text-[10px] font-mono uppercase tracking-wider text-[var(--ink-soft)] px-4 py-3">{c.label}</th>
               ))}
               <th className="text-right text-[10px] font-mono uppercase tracking-wider text-[var(--ink-soft)] px-4 py-3 w-32">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {items.map((it) => (
-              <tr key={it.id} className="border-b border-[var(--line)] last:border-0 hover:bg-[var(--paper-surface)]" data-testid={`${testidPrefix}-row-${it.id}`}>
-                {columns.map((c) => (
-                  <td key={c.key} className="px-4 py-3 text-[var(--ink)] align-top">
-                    {renderCell(it[c.key])}
-                  </td>
-                ))}
-                <td className="px-4 py-3 text-right">
-                  <button onClick={() => startEdit(it)} data-testid={`${testidPrefix}-edit-${it.id}`} className="inline-flex items-center gap-1 text-xs text-[var(--brand-teal)] mr-3 hover:underline"><PencilSimple size={12} /> Edit</button>
-                  <button onClick={() => remove(it.id)} data-testid={`${testidPrefix}-delete-${it.id}`} className="inline-flex items-center gap-1 text-xs text-red-600 hover:underline"><Trash size={12} /> Delete</button>
-                </td>
-              </tr>
-            ))}
-            {items.length === 0 && (
-              <tr><td colSpan={columns.length + 1} className="px-4 py-12 text-center text-[var(--ink-soft)]">No items yet — click New.</td></tr>
-            )}
-          </tbody>
+          <SortableList items={items} onReorder={reorder}>
+            <tbody>
+              {items.map((it) => (
+                <SortableItem key={it.id} id={it.id} as="tr"
+                  className="border-b border-[var(--line)] last:border-0 hover:bg-[var(--paper-surface)] bg-white">
+                  {({ handleProps }) => (
+                    <>
+                      {canSort && (
+                        <td className="pl-3 align-middle">
+                          <DragHandle handleProps={handleProps} />
+                        </td>
+                      )}
+                      {columns.map((c) => (
+                        <td key={c.key} className="px-4 py-3 text-[var(--ink)] align-top">
+                          {renderCell(it[c.key])}
+                        </td>
+                      ))}
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <button onClick={() => startEdit(it)} data-testid={`${testidPrefix}-edit-${it.id}`} className="inline-flex items-center gap-1 text-xs text-[var(--brand-ink)] mr-3 hover:underline"><PencilSimple size={12} /> Edit</button>
+                        <button onClick={() => remove(it.id)} data-testid={`${testidPrefix}-delete-${it.id}`} className="inline-flex items-center gap-1 text-xs text-red-600 hover:underline"><Trash size={12} /> Delete</button>
+                      </td>
+                    </>
+                  )}
+                </SortableItem>
+              ))}
+              {items.length === 0 && (
+                <tr><td colSpan={columns.length + (canSort ? 2 : 1)} className="px-4 py-12 text-center text-[var(--ink-soft)]">No items yet — click New.</td></tr>
+              )}
+            </tbody>
+          </SortableList>
         </table>
       </div>
 
