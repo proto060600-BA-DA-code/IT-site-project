@@ -32,6 +32,71 @@ async def upgrade_placeholder_about():
         )
 
 
+async def seed_catalogue():
+    """Insert any catalogue category or service that doesn't exist yet.
+    Never modifies existing records — admin edits are left alone."""
+    from content.catalogue import CATEGORIES, SERVICES
+
+    cat_ids = {}
+    for c in CATEGORIES:
+        existing = await db.categories.find_one({"slug": c["slug"]}, {"_id": 0, "id": 1})
+        if existing:
+            cat_ids[c["slug"]] = existing["id"]
+            continue
+        cat = Category(**c)
+        await db.categories.insert_one(cat.model_dump())
+        cat_ids[c["slug"]] = cat.id
+
+    for s in SERVICES:
+        if await db.services.find_one({"slug": s["slug"]}):
+            continue
+        data = {k: v for k, v in s.items() if k != "category"}
+        data["category_id"] = cat_ids[s["category"]]
+        await db.services.insert_one(Service(**data).model_dump())
+    return cat_ids
+
+
+# The original placeholder price for this slug — if it's still there, the
+# service was never edited and is safe to replace with the researched version.
+_LEGACY_DISCOVERY_PRICE = "From ₹1,50,000"
+
+
+async def migrate_catalogue_v2():
+    """One-time switch from the placeholder catalogue to the researched one.
+
+    Retires (deactivates — never deletes) the old placeholder services and
+    categories, and refreshes the one slug both catalogues share if it's still
+    unedited. Recorded in db.migrations so it never runs twice: re-enabling an
+    old service in the admin afterwards sticks.
+    """
+    from content.catalogue import (
+        SERVICES, LEGACY_SERVICE_SLUGS, LEGACY_CATEGORY_SLUGS,
+    )
+
+    if await db.migrations.find_one({"id": "catalogue_v2"}):
+        return
+
+    cat_ids = await seed_catalogue()
+
+    await db.services.update_many(
+        {"slug": {"$in": LEGACY_SERVICE_SLUGS}},
+        {"$set": {"active": False, "featured": False, "updated_at": now_iso()}},
+    )
+    await db.categories.update_many(
+        {"slug": {"$in": LEGACY_CATEGORY_SLUGS}},
+        {"$set": {"active": False, "updated_at": now_iso()}},
+    )
+
+    for s in SERVICES:
+        doc = await db.services.find_one({"slug": s["slug"]}, {"_id": 0, "price_label": 1})
+        if doc and doc.get("price_label") == _LEGACY_DISCOVERY_PRICE:
+            data = {k: v for k, v in s.items() if k != "category"}
+            data.update(category_id=cat_ids[s["category"]], active=True, updated_at=now_iso())
+            await db.services.update_one({"slug": s["slug"]}, {"$set": data})
+
+    await db.migrations.insert_one({"id": "catalogue_v2", "at": now_iso()})
+
+
 async def seed_admin():
     email = os.environ["ADMIN_EMAIL"].lower()
     password = os.environ["ADMIN_PASSWORD"]
@@ -147,26 +212,8 @@ Treating the fractional BA as a part-time project manager. They are not. They ar
             doc["published_at"] = now_iso()
             await db.posts.insert_one(doc)
 
-    # CATEGORIES
-    cats_seed = [
-        {"name": "Business Analysis & Advisory", "slug": "business-analysis-advisory",
-         "description": "Requirements, process mapping & BA-as-a-service for IT and product teams.", "order": 1},
-        {"name": "AI Product Engineering", "slug": "ai-product-engineering",
-         "description": "Design and build AI products, copilots & LLM-powered features end to end.", "order": 2},
-        {"name": "Automation & Integration", "slug": "automation-integration",
-         "description": "Workflow automation, system integration & intelligent process automation.", "order": 3},
-        {"name": "Data, Analytics & AI Strategy", "slug": "data-ai-strategy",
-         "description": "AI readiness, data foundations, dashboards & measurable ROI.", "order": 4},
-    ]
-    cat_map = {}
-    for c in cats_seed:
-        existing = await db.categories.find_one({"slug": c["slug"]}, {"_id": 0})
-        if existing:
-            cat_map[c["slug"]] = existing["id"]
-            continue
-        cat = Category(**c)
-        await db.categories.insert_one(cat.model_dump())
-        cat_map[c["slug"]] = cat.id
+    # CATEGORIES + SERVICES — from content/catalogue.py (see seed_catalogue).
+    await seed_catalogue()
 
     # BANNERS
     banners_seed = [
@@ -182,67 +229,6 @@ Treating the fractional BA as a part-time project manager. They are not. They ar
     for b in banners_seed:
         if not await db.banners.find_one({"title": b["title"]}):
             await db.banners.insert_one(Banner(**b).model_dump())
-
-    # SERVICES
-    services_seed = [
-        {"name": "Business Analysis as a Service", "slug": "business-analysis-as-a-service",
-         "category_id": cat_map["business-analysis-advisory"],
-         "short_description": "An on-demand senior IT Business Analyst embedded with your product & engineering teams.",
-         "long_description": "Get a senior Business Analyst part-time, without the full-time hire. We run discovery, write epics and user stories, manage vendors, facilitate ceremonies and translate strategy into a shippable backlog your team can build against.",
-         "image_url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
-         "price_label": "From ₹1,20,000/mo",
-         "features": ["Epics & user stories", "Backlog ownership", "Discovery & workshops", "Vendor & tooling selection"],
-         "deliverables": ["Weekly delivery cadence", "Decision memos", "Stakeholder map"],
-         "duration": "Ongoing", "featured": True},
-        {"name": "Requirements & Process Discovery", "slug": "requirements-process-discovery",
-         "category_id": cat_map["business-analysis-advisory"],
-         "short_description": "Turn a fuzzy idea or broken process into a clear, build-ready specification.",
-         "long_description": "A structured discovery engagement that produces a defensible requirements package: as-is/to-be process maps, business and functional requirements, success metrics and acceptance criteria — everything engineering needs to estimate and build with confidence.",
-         "image_url": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-         "price_label": "From ₹1,50,000",
-         "features": ["As-is / to-be process maps", "BRD & FRD", "Success metrics & KPIs", "Acceptance criteria"],
-         "deliverables": ["Requirements document", "Process diagrams", "Prioritized backlog"],
-         "duration": "3–5 weeks", "featured": False},
-        {"name": "AI Product MVP Build", "slug": "ai-product-mvp-build",
-         "category_id": cat_map["ai-product-engineering"],
-         "short_description": "Go from problem statement to a working AI prototype real users can try — in six weeks.",
-         "long_description": "Our flagship build engagement. We frame the problem, define a baseline, build an end-to-end AI product over your real data, add evaluation and guardrails, then pilot it with real users so you can make a go/iterate/stop decision backed by evidence.",
-         "image_url": "https://images.unsplash.com/photo-1622675363311-3e1904dc1885",
-         "price_label": "From ₹6,00,000",
-         "features": ["Problem framing & baseline", "End-to-end build", "Evaluation & guardrails", "User pilot"],
-         "deliverables": ["Working prototype", "Evaluation report", "Roadmap & decision memo"],
-         "duration": "6–8 weeks", "featured": True},
-        {"name": "LLM & GenAI Integration", "slug": "llm-genai-integration",
-         "category_id": cat_map["ai-product-engineering"],
-         "short_description": "Add LLM-powered features — copilots, search, summarisation, agents — to your existing product.",
-         "long_description": "We design and integrate generative-AI features into your live product: retrieval-augmented chat, document understanding, copilots and task automation. We handle prompt design, retrieval, evaluation and safe rollout behind feature flags.",
-         "image_url": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485",
-         "price_label": "Custom Quote",
-         "features": ["RAG & retrieval", "Copilots & agents", "Evaluation harness", "Phased, flagged rollout"],
-         "deliverables": ["Integrated feature", "Eval dashboard", "Runbook"],
-         "duration": "6–12 weeks", "featured": True},
-        {"name": "Intelligent Workflow Automation", "slug": "intelligent-workflow-automation",
-         "category_id": cat_map["automation-integration"],
-         "short_description": "Automate repetitive operational and back-office workflows with AI in the loop.",
-         "long_description": "We map your manual workflows, identify the highest-ROI automation candidates and ship integrations that connect your systems — combining rules, APIs and AI where it genuinely helps. Built for reliability with clear human-in-the-loop checkpoints.",
-         "image_url": "https://images.pexels.com/photos/1313534/pexels-photo-1313534.jpeg",
-         "price_label": "From ₹2,00,000",
-         "features": ["Workflow mapping", "System & API integration", "AI-assisted steps", "Human-in-the-loop checkpoints"],
-         "deliverables": ["Automation blueprint", "Working integrations", "Monitoring & handover"],
-         "duration": "4–8 weeks", "featured": False},
-        {"name": "AI Readiness Assessment & Roadmap", "slug": "ai-readiness-assessment-roadmap",
-         "category_id": cat_map["data-ai-strategy"],
-         "short_description": "A focused audit of your data, processes and opportunities, with a prioritised AI roadmap.",
-         "long_description": "Before you invest, know where AI will actually pay off. We assess your data foundations, processes and team readiness, then deliver a prioritised, ROI-ranked roadmap of AI and automation opportunities you can act on.",
-         "image_url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
-         "price_label": "From ₹75,000",
-         "features": ["Data & process audit", "Opportunity mapping", "ROI prioritisation", "Exec readout"],
-         "deliverables": ["Readiness report", "Prioritised roadmap", "Leadership presentation"],
-         "duration": "2–3 weeks", "featured": False},
-    ]
-    for s in services_seed:
-        if not await db.services.find_one({"slug": s["slug"]}):
-            await db.services.insert_one(Service(**s).model_dump())
 
     # PAGES (about / privacy / terms)
     pages_seed = [
@@ -337,6 +323,7 @@ async def run_all():
     await seed_admin()
     await attach_legacy_admins()
     await seed_content()
+    await migrate_catalogue_v2()
     await upgrade_placeholder_about()
     await seed_layouts()
     await seed_settings()
