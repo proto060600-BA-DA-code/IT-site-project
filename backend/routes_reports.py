@@ -29,7 +29,10 @@ def _day(iso: str) -> str:
 @router.get("/reports/leads")
 async def leads_report(days: int = Query(30, ge=1, le=365)):
     since = _cutoff(days)
-    docs = await db.leads.find({}, {"_id": 0}).to_list(10000)
+    # Spam isn't a lead. Counting it would inflate volume and drag down the
+    # conversion rate, so it's excluded from every figure and reported apart.
+    docs = await db.leads.find({"status": {"$ne": "spam"}}, {"_id": 0}).to_list(10000)
+    spam_count = await db.leads.count_documents({"status": "spam", "created_at": {"$gte": since}})
     recent = [d for d in docs if (d.get("created_at") or "") >= since]
 
     # Volume per day, zero-filled so the chart has no gaps.
@@ -62,6 +65,7 @@ async def leads_report(days: int = Query(30, ge=1, le=365)):
     return {
         "range_days": days,
         "total": total,
+        "spam_blocked": spam_count,
         "previous_total": prev_total,
         "change_pct": change,
         "qualified": qualified,
@@ -118,6 +122,8 @@ async def export_leads(
     query = {}
     if status and status != "all":
         query["status"] = status
+    else:
+        query["status"] = {"$ne": "spam"}  # spam only when explicitly asked for
     if source and source != "all":
         query["source"] = source
     if days:

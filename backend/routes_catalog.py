@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
 from typing import List, Optional
 from db import db
 from models import Banner, Category, Client, Service, Page, Lead, LeadIn, now_iso
 from email_service import send_lead_notification
+from ratelimit import limit_by_ip
+from spam import score_lead, SPAM_THRESHOLD
 
 router = APIRouter(tags=["catalog"])
 
@@ -11,6 +13,13 @@ router = APIRouter(tags=["catalog"])
 async def list_banners():
     docs = await db.banners.find({"active": True}, {"_id": 0}).sort("order", 1).to_list(100)
     return [Banner(**d) for d in docs]
+
+
+@router.get("/settings")
+async def public_settings():
+    """Public read of site-wide copy — header strip, logo, footer, contact."""
+    from routes_settings import get_settings
+    return await get_settings()
 
 
 @router.get("/layouts/{page}")
@@ -77,9 +86,31 @@ async def get_page(slug: str):
     return Page(**doc)
 
 
-@router.post("/leads", response_model=Lead)
+@router.post("/leads", dependencies=[Depends(limit_by_ip("leads", 5, 600))])
 async def create_lead(payload: LeadIn, background: BackgroundTasks):
-    lead = Lead(**payload.model_dump())
+    # DPDP: processing needs the person's consent for a stated purpose. The
+    # form makes this a required checkbox; enforce it here too, since the API
+    # is public and can be called without the form.
+    if not payload.consent:
+        raise HTTPException(
+            status_code=400,
+            detail="Please confirm you agree to us using your details to respond to this enquiry.",
+        )
+
+    score, reasons = score_lead(payload)
+    data = payload.model_dump(exclude={"website", "form_started_at"})
+    lead = Lead(
+        **data,
+        consent_at=now_iso(),
+        spam_score=score,
+        spam_reasons=reasons,
+        status="spam" if score >= SPAM_THRESHOLD else "new",
+    )
     await db.leads.insert_one(lead.model_dump())
-    background.add_task(send_lead_notification, lead.model_dump())
-    return lead
+
+    if lead.status != "spam":
+        background.add_task(send_lead_notification, lead.model_dump())
+
+    # Same response either way: telling a bot it was flagged only teaches it
+    # what to change. Nothing personal is echoed back.
+    return {"ok": True, "id": lead.id}

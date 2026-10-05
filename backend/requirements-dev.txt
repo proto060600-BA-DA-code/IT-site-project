@@ -1,0 +1,12 @@
+# Test-only dependencies. Kept out of requirements.txt so Render never
+# installs them in production.
+#
+#   pip install -r requirements-dev.txt
+#   pytest tests -q
+#
+# Tests run against an in-memory MongoDB — no database, network or secrets.
+-r requirements.txt
+pytest>=8
+pytest-asyncio>=0.23
+httpx>=0.27
+mongomock-motor>=0.0.30

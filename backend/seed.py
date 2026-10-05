@@ -320,11 +320,15 @@ legal@iamrohankapoor.com
 
 
 async def run_all():
-    # Roles first: seed_admin attaches the admin role to the seeded user.
-    from routes_rbac import seed_roles
+    from routes_rbac import seed_roles, attach_legacy_admins
     from routes_layouts import seed_layouts
+    from routes_settings import seed_settings
 
+    # Order matters: roles must exist before they can be attached, and the
+    # admin user must exist before it can receive one.
     await seed_roles()
     await seed_admin()
+    await attach_legacy_admins()
     await seed_content()
     await seed_layouts()
+    await seed_settings()

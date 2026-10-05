@@ -2,20 +2,22 @@ import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
-import { BRAND } from "@/lib/brand";
+import { useSettings } from "@/contexts/SettingsContext";
 import { List, X, CaretDown, User as UserIcon } from "@phosphor-icons/react";
 
-function Logo() {
+function Logo({ title, subtitle }) {
   return (
     <Link to="/" className="flex items-center gap-3">
       <div className="leading-tight">
         <div className="text-[16px] font-semibold tracking-tight text-[var(--off-white)]">
-          RK AI Labs
+          {title}
         </div>
 
-        <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
-          Business & AI Solutions
-        </div>
+        {subtitle && (
+          <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+            {subtitle}
+          </div>
+        )}
       </div>
     </Link>
   );
@@ -23,6 +25,7 @@ function Logo() {
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const s = useSettings();
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
@@ -36,21 +39,19 @@ export default function Header() {
 
   return (
     <>
-      <div className="bg-[var(--navy-900)] text-[var(--slate-200)] text-xs">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-2 flex justify-between">
-          <span>
-            Business Analysis • AI Solutions • Digital Transformation
-          </span>
-          <span className="hidden md:block text-[var(--gold)]">
-            Free Discovery Call Available
-          </span>
+      {s.announcement_enabled && (
+        <div className="bg-[var(--navy-900)] text-[var(--slate-200)] text-xs" data-testid="announcement-bar">
+          <div className="max-w-7xl mx-auto px-6 lg:px-10 py-2 flex justify-between">
+            <span>{s.announcement_left}</span>
+            <span className="hidden md:block text-[var(--gold)]">{s.announcement_right}</span>
+          </div>
         </div>
-      </div>
+      )}
 
       <header className="sticky top-0 z-40 bg-[var(--navy-950)]/95 backdrop-blur border-b border-[var(--line-dark)]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Logo />
+          <Logo title={s.logo_title} subtitle={s.logo_subtitle} />
           <nav className="hidden lg:flex items-center gap-7" data-testid="primary-nav">
             <NavLink to="/" end className={navLinkCls} data-testid="nav-home">Home</NavLink>
             <div
@@ -123,8 +124,8 @@ export default function Header() {
               Sign in
             </Link>
           )}
-          <Link to="/contact" data-testid="header-cta" className="hidden md:inline-flex btn-accent !py-2 !px-4 text-sm">
-            Book a consultation →
+          <Link to={s.header_cta_link || "/contact"} data-testid="header-cta" className="hidden md:inline-flex btn-accent !py-2 !px-4 text-sm">
+            {s.header_cta_label}
           </Link>
           <button
             data-testid="mobile-menu-toggle"
@@ -154,7 +155,7 @@ export default function Header() {
             ) : (
               <Link to="/login" onClick={() => setOpen(false)} className="py-1.5 text-sm">Sign in</Link>
             )}
-            <Link to="/contact" onClick={() => setOpen(false)} className="btn-accent text-center text-sm mt-2">Book a consultation</Link>
+            <Link to={s.header_cta_link || "/contact"} onClick={() => setOpen(false)} className="btn-accent text-center text-sm mt-2">{s.header_cta_label}</Link>
           </div>
         </div>
       )}

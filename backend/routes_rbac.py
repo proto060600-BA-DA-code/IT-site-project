@@ -222,9 +222,22 @@ DEFAULT_ROLES = [
 ]
 
 
+async def attach_legacy_admins():
+    """Give every role="admin" user with no role_id the Administrator role.
+
+    Must run AFTER seed_admin: on a fresh database the admin user doesn't
+    exist until then, so running it inside seed_roles attached nobody.
+    """
+    admin_role = await db.roles.find_one({"slug": "admin"}, {"_id": 0, "id": 1})
+    if admin_role:
+        await db.users.update_many(
+            {"role": "admin", "role_id": None},
+            {"$set": {"role_id": admin_role["id"]}},
+        )
+
+
 async def seed_roles():
-    """Create the three built-in roles and attach the admin role to any
-    pre-existing legacy admin user. Safe to run on every boot."""
+    """Create the three built-in roles. Safe to run on every boot."""
     for name, slug, description, perm_fn in DEFAULT_ROLES:
         if await db.roles.find_one({"slug": slug}):
             continue
@@ -232,17 +245,10 @@ async def seed_roles():
             perms = perm_fn()
         else:  # Editor — everything except users and roles
             perms = full_permissions()
-            for locked in ("users", "roles"):
+            for locked in ("users", "roles", "audit"):
                 perms[locked] = {a: False for a in ACTIONS}
             perms["users"]["read"] = True
         await db.roles.insert_one(
             Role(name=name, slug=slug, description=description,
                  permissions=perms, system=True).model_dump()
-        )
-
-    admin_role = await db.roles.find_one({"slug": "admin"}, {"_id": 0, "id": 1})
-    if admin_role:
-        await db.users.update_many(
-            {"role": "admin", "role_id": None},
-            {"$set": {"role_id": admin_role["id"]}},
         )

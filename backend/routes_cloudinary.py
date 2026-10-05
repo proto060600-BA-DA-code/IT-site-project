@@ -7,7 +7,7 @@ import cloudinary.utils
 import cloudinary.uploader
 from fastapi import APIRouter, HTTPException, Depends, Query
 
-from auth import require_admin
+from auth import require_permission
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +18,14 @@ cloudinary.config(
     secure=True,
 )
 
-ALLOWED_FOLDERS = ("banners/", "services/", "blog/", "uploads/")
+# Must match routes_media.ALLOWED_FOLDERS — the media library and page builder
+# upload into clients/ and pages/, which this list previously rejected.
+ALLOWED_FOLDERS = ("banners/", "services/", "blog/", "clients/", "pages/", "uploads/")
 
-router = APIRouter(prefix="/cloudinary", tags=["cloudinary"], dependencies=[Depends(require_admin)])
+# A signature lets the holder upload to our Cloudinary account, so it requires
+# media:create — not merely "has some admin permission".
+router = APIRouter(prefix="/cloudinary", tags=["cloudinary"],
+                   dependencies=[Depends(require_permission("media", "create"))])
 
 
 @router.get("/signature")

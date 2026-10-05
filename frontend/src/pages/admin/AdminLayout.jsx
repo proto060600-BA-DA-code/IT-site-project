@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   House, Image, Tree, Briefcase, FileText, Users, Buildings, SignOut,
-  ShieldCheck, UserCircle, Images, SquaresFour, ArrowCounterClockwise,
+  ShieldCheck, UserCircle, Images, SquaresFour, ArrowCounterClockwise, Gear, ClockCounterClockwise,
 } from "@phosphor-icons/react";
 import { SortableList, SortableItem, DragHandle } from "@/components/admin/Sortable";
 
@@ -22,6 +22,8 @@ const NAV = [
   { id: "leads", to: "/admin/leads", label: "Leads", icon: Users },
   { id: "users", to: "/admin/users", label: "Users", icon: UserCircle },
   { id: "roles", to: "/admin/roles", label: "Roles & permissions", icon: ShieldCheck },
+  { id: "settings", to: "/admin/settings", label: "Site settings", icon: Gear },
+  { id: "audit", to: "/admin/audit", label: "Audit log", icon: ClockCounterClockwise },
 ];
 
 const ORDER_KEY = "rk_admin_nav_order";

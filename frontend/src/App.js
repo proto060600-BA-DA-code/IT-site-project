@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ChatWidget";
@@ -27,6 +28,8 @@ import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminRoles from "@/pages/admin/AdminRoles";
 import AdminMedia from "@/pages/admin/AdminMedia";
 import AdminPageBuilder from "@/pages/admin/AdminPageBuilder";
+import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminAudit from "@/pages/admin/AdminAudit";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminServices from "@/pages/admin/AdminServices";
 import AdminPages from "@/pages/admin/AdminPages";
@@ -103,6 +106,8 @@ function AppRoutes() {
           <Route path="page-builder" element={<AdminPageBuilder />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="roles" element={<AdminRoles />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route path="audit" element={<AdminAudit />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
@@ -114,10 +119,12 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-        <Toaster position="top-right" />
-      </BrowserRouter>
+      <SettingsProvider>
+        <BrowserRouter>
+          <AppRoutes />
+          <Toaster position="top-right" />
+        </BrowserRouter>
+      </SettingsProvider>
     </AuthProvider>
   );
 }

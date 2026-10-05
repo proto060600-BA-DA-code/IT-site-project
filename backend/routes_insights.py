@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from db import db
 from models import BaseDoc, now_iso
-from auth import require_admin
+from auth import enforce_admin_rbac
 
 
 class Post(BaseDoc):
@@ -35,7 +35,10 @@ class PostIn(BaseModel):
 
 
 public = APIRouter(prefix="/insights", tags=["insights"])
-admin = APIRouter(prefix="/admin/posts", tags=["admin-posts"], dependencies=[Depends(require_admin)])
+# Same per-resource RBAC guard as the main admin router. This previously used
+# require_admin, which let any role with any permission (e.g. a read-only
+# Viewer) create and delete posts.
+admin = APIRouter(prefix="/admin/posts", tags=["admin-posts"], dependencies=[Depends(enforce_admin_rbac)])
 
 
 # -------- PUBLIC --------

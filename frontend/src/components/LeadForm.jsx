@@ -1,13 +1,25 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { ArrowRight } from "@phosphor-icons/react";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function LeadForm({ source = "lead_capture", serviceInterest = "", compact = false }) {
+  const s = useSettings();
+  const consentText =
+    s.consent_text ||
+    "I agree to RK AI Labs using these details to respond to my enquiry, as described in the Privacy Policy.";
+
   const [form, setForm] = useState({
     name: "", email: "", phone: "", company: "", service_interest: serviceInterest, message: "",
   });
+  const [consent, setConsent] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  // When the form first rendered. The server treats a sub-3-second submit as
+  // a bot. A ref, not state, so it never changes on re-render.
+  const startedAt = useRef(Date.now());
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -15,9 +27,20 @@ export default function LeadForm({ source = "lead_capture", serviceInterest = ""
 
   const submit = async (e) => {
     e.preventDefault();
+    if (!consent) {
+      toast.error("Please tick the consent box so we can reply to you.");
+      return;
+    }
     setSubmitting(true);
     try {
-      await api.post("/leads", { ...form, source });
+      await api.post("/leads", {
+        ...form,
+        source,
+        consent: true,
+        consent_text: consentText,
+        website: honeypot,
+        form_started_at: startedAt.current,
+      });
       setDone(true);
       toast.success("Thanks! We'll be in touch within one business day.");
     } catch (err) {
@@ -38,7 +61,7 @@ export default function LeadForm({ source = "lead_capture", serviceInterest = ""
   }
 
   return (
-    <form onSubmit={submit} data-testid="lead-form" className="space-y-4 bg-white border border-[var(--line)] p-6 sm:p-8">
+    <form onSubmit={submit} data-testid="lead-form" className="relative space-y-4 bg-white border border-[var(--line)] p-6 sm:p-8">
       <div className={`grid ${compact ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"} gap-4`}>
         <Field label="Full name *" required value={form.name} onChange={update("name")} testid="lead-name" />
         <Field label="Work email *" type="email" required value={form.email} onChange={update("email")} testid="lead-email" />
@@ -57,6 +80,32 @@ export default function LeadForm({ source = "lead_capture", serviceInterest = ""
           placeholder="What problem are you trying to solve?"
         />
       </div>
+
+      {/* Honeypot: off-screen and skipped by keyboard and screen readers, so
+          only bots fill it. Not display:none — some bots skip hidden fields. */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+        <label>
+          Website
+          <input type="text" name="website" tabIndex={-1} autoComplete="off"
+            value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+        </label>
+      </div>
+
+      <label className="flex items-start gap-2.5 text-xs text-[var(--ink-soft)] leading-relaxed cursor-pointer">
+        <input
+          type="checkbox"
+          data-testid="lead-consent"
+          required
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          className="mt-0.5 w-4 h-4 shrink-0 accent-[var(--brand-ink)]"
+        />
+        <span>
+          {consentText}{" "}
+          <Link to="/privacy" className="underline hover:text-[var(--ink)]">Privacy Policy</Link>
+        </span>
+      </label>
+
       <button
         data-testid="lead-submit"
         disabled={submitting}

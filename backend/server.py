@@ -45,6 +45,11 @@ api_router.include_router(routes_insights.admin)
 app.include_router(api_router)
 app.include_router(routes_seo.router)
 
+# Added before CORS so CORS stays outermost (Starlette runs the last-added
+# middleware first). Records every /api/admin write; never blocks one.
+from routes_audit import AuditMiddleware  # noqa: E402
+app.add_middleware(AuditMiddleware)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
@@ -68,7 +73,14 @@ async def on_startup():
     except Exception as e:
         logger.exception("Seed failed: %s", e)
 
+    # DPDP retention purge: once now, then daily. Disabled in tests via env.
+    if os.environ.get("DISABLE_BACKGROUND_JOBS") != "1":
+        import retention
+        retention.start()
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    import retention
+    await retention.stop()
     client.close()

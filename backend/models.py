@@ -24,7 +24,7 @@ class BaseDoc(BaseModel):
 # needed for it to appear in the role permission matrix.
 RESOURCES = [
     "banners", "clients", "categories", "services", "pages", "posts",
-    "leads", "media", "layouts", "users", "roles", "reports",
+    "leads", "media", "layouts", "users", "roles", "reports", "settings", "audit",
 ]
 ACTIONS = ["create", "read", "update", "delete"]
 
@@ -288,7 +288,16 @@ class Lead(BaseDoc):
     service_interest: Optional[str] = ""
     message: str = ""
     source: str = "contact_form"  # contact_form, lead_capture, pdp
-    status: str = "new"  # new, contacted, qualified, closed
+    status: str = "new"  # new, contacted, qualified, closed, spam
+    # Spam scoring — recorded rather than silently dropped, so a false
+    # positive can be released from the admin.
+    spam_score: int = 0
+    spam_reasons: List[str] = []
+    # DPDP Act consent record: what the person agreed to, and when.
+    consent: bool = False
+    consent_at: Optional[str] = None
+    consent_text: Optional[str] = None
+    purpose: str = "respond_to_enquiry"
 
 
 class LeadIn(BaseModel):
@@ -299,6 +308,12 @@ class LeadIn(BaseModel):
     service_interest: Optional[str] = ""
     message: str = ""
     source: str = "contact_form"
+    consent: bool = False
+    consent_text: Optional[str] = None
+    # Anti-spam signals. `website` is a honeypot: hidden from people, filled
+    # by naive bots. `form_started_at` is epoch ms when the form first rendered.
+    website: Optional[str] = ""
+    form_started_at: Optional[int] = None
 
 
 class LeadUpdate(BaseModel):

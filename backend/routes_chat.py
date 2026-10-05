@@ -1,7 +1,9 @@
 import os
 import uuid
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
+
+from ratelimit import limit_by_ip
 
 from db import db
 from models import ChatIn, ChatMessage, now_iso
@@ -45,8 +47,12 @@ def _build_history(docs):
     return msgs
 
 
-@router.post("/stream")
+# Every message is a paid model call. 20 per 10 minutes per IP is generous for
+# a real visitor and caps what a script can spend on your Anthropic account.
+@router.post("/stream", dependencies=[Depends(limit_by_ip("chat", 20, 600))])
 async def chat_stream(payload: ChatIn):
+    if len(payload.message or "") > 4000:
+        raise HTTPException(status_code=400, detail="Message is too long")
     session_id = payload.session_id or str(uuid.uuid4())
 
     # persist user message

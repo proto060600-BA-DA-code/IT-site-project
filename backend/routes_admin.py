@@ -5,7 +5,7 @@ from models import (
     Banner, BannerIn, Category, CategoryIn, Client, ClientIn, Service, ServiceIn,
     Page, PageIn, Lead, LeadUpdate, now_iso,
 )
-from auth import enforce_admin_rbac
+from auth import enforce_admin_rbac, require_permission
 
 # One blanket dependency covers every route below: it resolves the caller's
 # permission matrix and checks it against the path's resource + the method's
@@ -52,11 +52,15 @@ from routes_rbac import router as rbac_router          # noqa: E402
 from routes_media import router as media_router        # noqa: E402
 from routes_layouts import router as layouts_router    # noqa: E402
 from routes_reports import router as reports_router    # noqa: E402
+from routes_settings import router as settings_router  # noqa: E402
+from routes_audit import router as audit_router        # noqa: E402
 
+router.include_router(audit_router)
 router.include_router(rbac_router)
 router.include_router(media_router)
 router.include_router(layouts_router)
 router.include_router(reports_router)
+router.include_router(settings_router)
 
 
 # ---- CLIENTS ("trusted by" band) ----
@@ -221,6 +225,23 @@ async def admin_delete_lead(lid: str):
     if r.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")
     return {"ok": True}
+
+
+# Declared as a static path, so it must come before any "/leads/{lid}" POST
+# route if one is ever added.
+@router.post("/leads/erase", dependencies=[Depends(require_permission("leads", "delete"))])
+async def admin_erase_person(payload: dict):
+    """DPDP data-principal erasure: remove every lead for one email address.
+
+    POST with the email in the body — never in the URL — so it doesn't end up
+    in access logs. The blanket guard checks leads:create (POST); erasure is
+    destructive, so leads:delete is required as well.
+    """
+    email = (payload.get("email") or "").strip().lower()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="A valid email address is required")
+    r = await db.leads.delete_many({"email": email})
+    return {"ok": True, "deleted": r.deleted_count}
 
 
 # ---- DASHBOARD STATS ----
