@@ -56,7 +56,7 @@ SETTINGS_SCHEMA = [
             {"key": "tagline", "label": "Tagline", "type": "text",
              "default": "AI • Software • Digital Transformation"},
             {"key": "phone", "label": "Phone", "type": "text", "default": "+91 98735 56197"},
-            {"key": "email", "label": "Email", "type": "text", "default": "hello@synferrous.com"},
+            {"key": "email", "label": "Email", "type": "text", "default": "info@synferrous.com"},
             {"key": "address", "label": "Address", "type": "text", "default": "Delhi NCR, India"},
             {"key": "founded", "label": "Founded line", "type": "text", "default": "Founded 2026 · India"},
             {"key": "linkedin", "label": "LinkedIn URL", "type": "text", "default": ""},

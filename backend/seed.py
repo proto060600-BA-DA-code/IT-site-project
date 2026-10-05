@@ -99,11 +99,23 @@ async def migrate_catalogue_v2():
 
 # ── Rebrand to Synferrous (Oct 2026) ────────────────────────────────────────
 # Ordered: the more specific phrases must be replaced before the bare name.
+CONTACT_EMAIL = "info@synferrous.com"   # the one mailbox that exists for now
+
 REBRAND_REPLACEMENTS = [
     ("RK AI Labs Team", "Rohan Kapoor"),   # no team — a named author is more credible
     ("RK AI Labs", "Synferrous"),
-    ("hello@iamrohankapoor.com", "hello@synferrous.com"),
+    # Every old address goes to the single real mailbox, not to look-alike
+    # addresses on the new domain that nobody receives.
+    ("hello@iamrohankapoor.com", CONTACT_EMAIL),
+    ("privacy@iamrohankapoor.com", CONTACT_EMAIL),
+    ("legal@iamrohankapoor.com", CONTACT_EMAIL),
+    ("security@iamrohankapoor.com", CONTACT_EMAIL),
     ("iamrohankapoor.com", "synferrous.com"),
+]
+
+# For databases where the rebrand already ran with hello@/privacy@/… addresses.
+CONTACT_EMAIL_REPLACEMENTS = [
+    (f"{box}@synferrous.com", CONTACT_EMAIL) for box in ("hello", "privacy", "legal", "security")
 ]
 # Seeded values that made claims the business can't evidence. Replaced only
 # when a field still holds exactly the seeded text — an edit is left alone.
@@ -117,25 +129,29 @@ REBRAND_COLLECTIONS = ["settings", "pages", "layouts", "posts", "services", "cat
 _REBRAND_SKIP_KEYS = {"_id", "id", "slug"}
 
 
-def rebrand_value(value):
+def _rewrite(value, replacements, exact=None):
     if isinstance(value, str):
-        if value in REBRAND_EXACT:
-            return REBRAND_EXACT[value]
-        for old, new in REBRAND_REPLACEMENTS:
+        if exact and value in exact:
+            return exact[value]
+        for old, new in replacements:
             value = value.replace(old, new)
         return value
     if isinstance(value, list):
-        return [rebrand_value(v) for v in value]
+        return [_rewrite(v, replacements, exact) for v in value]
     if isinstance(value, dict):
-        return {k: (v if k in _REBRAND_SKIP_KEYS else rebrand_value(v)) for k, v in value.items()}
+        return {k: (v if k in _REBRAND_SKIP_KEYS else _rewrite(v, replacements, exact)) for k, v in value.items()}
     return value
 
 
-async def migrate_rebrand_synferrous():
-    """One-time rewrite of the old brand, domain and emails in stored content.
-    Recorded in db.migrations, so it never runs twice — anything an admin
-    changes afterwards is left alone."""
-    if await db.migrations.find_one({"id": "rebrand_synferrous"}):
+def rebrand_value(value):
+    return _rewrite(value, REBRAND_REPLACEMENTS, REBRAND_EXACT)
+
+
+async def _rewrite_content_once(migration_id, replacements, exact=None):
+    """Apply text replacements across content collections, exactly once.
+    Recorded in db.migrations, so anything an admin changes afterwards is
+    left alone."""
+    if await db.migrations.find_one({"id": migration_id}):
         return
     changed = 0
     for coll in REBRAND_COLLECTIONS:
@@ -144,13 +160,24 @@ async def migrate_rebrand_synferrous():
                 continue
             updates = {
                 k: new for k, v in doc.items()
-                if k not in _REBRAND_SKIP_KEYS and (new := rebrand_value(v)) != v
+                if k not in _REBRAND_SKIP_KEYS and (new := _rewrite(v, replacements, exact)) != v
             }
             if updates:
                 updates["updated_at"] = now_iso()
                 await db[coll].update_one({"id": doc["id"]}, {"$set": updates})
                 changed += 1
-    await db.migrations.insert_one({"id": "rebrand_synferrous", "at": now_iso(), "documents": changed})
+    await db.migrations.insert_one({"id": migration_id, "at": now_iso(), "documents": changed})
+
+
+async def migrate_rebrand_synferrous():
+    """One-time rewrite of the old brand, domain and emails in stored content."""
+    await _rewrite_content_once("rebrand_synferrous", REBRAND_REPLACEMENTS, REBRAND_EXACT)
+
+
+async def migrate_contact_email_info():
+    """One-time switch of any hello@/privacy@/legal@/security@synferrous.com
+    already stored to the single real mailbox, info@synferrous.com."""
+    await _rewrite_content_once("contact_email_info", CONTACT_EMAIL_REPLACEMENTS)
 
 
 async def seed_admin():
@@ -315,16 +342,16 @@ We do **not** sell your data. We share it only with:
 - Authorities if required by law.
 
 ## 4. Retention
-Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at privacy@synferrous.com.
+Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at info@synferrous.com.
 
 ## 5. Your rights
-Subject to applicable law, you may request access, correction, deletion and portability of your data. Email privacy@synferrous.com.
+Subject to applicable law, you may request access, correction, deletion and portability of your data. Email info@synferrous.com.
 
 ## 6. Cookies
 We use a minimal session cookie for authentication. No third-party advertising cookies.
 
 ## 7. Contact
-Synferrous, Delhi NCR, India — privacy@synferrous.com
+Synferrous, Delhi NCR, India — info@synferrous.com
 """},
         {"slug": "terms",
          "title": "Terms & Conditions",
@@ -348,7 +375,7 @@ All trademarks, logos, copy, designs and code on the Site are owned by Synferrou
 The AI assistant ("Aria") may generate inaccurate or out-of-date information. Do not rely on it for binding decisions. Pricing displayed by Aria is indicative; final pricing is confirmed in writing.
 
 ## 5. Accounts
-You are responsible for safeguarding your account credentials. Notify us immediately at security@synferrous.com of any unauthorized use.
+You are responsible for safeguarding your account credentials. Notify us immediately at info@synferrous.com of any unauthorized use.
 
 ## 6. Limitation of liability
 To the maximum extent permitted by law, Synferrous is not liable for indirect, incidental or consequential damages arising from your use of the Site.
@@ -360,7 +387,7 @@ These Terms are governed by the laws of India. Disputes will be subject to the e
 We may update these Terms. The "Last updated" date at the top reflects the latest revision.
 
 ## 9. Contact
-legal@synferrous.com
+info@synferrous.com
 """},
     ]
     for p in pages_seed:
@@ -383,5 +410,6 @@ async def run_all():
     await upgrade_placeholder_about()
     await seed_layouts()
     await seed_settings()
-    # Last, so it sees every seeded or pre-existing document.
+    # Last, so they see every seeded or pre-existing document.
     await migrate_rebrand_synferrous()
+    await migrate_contact_email_info()

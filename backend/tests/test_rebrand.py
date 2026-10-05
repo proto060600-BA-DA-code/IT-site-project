@@ -43,12 +43,14 @@ def test_live_content_is_fully_rebranded(client):
 
     s = client.get("/api/settings").json()
     assert s["brand_name"] == s["logo_title"] == "Synferrous"
-    assert s["email"] == "hello@synferrous.com"
+    # Every old address lands on the one real mailbox.
+    assert s["email"] == "info@synferrous.com"
     assert "Synferrous" in s["consent_text"]
 
     about = client.get("/api/pages/about").json()["content"]
     assert "Synferrous is my practice" in about
-    assert "privacy@synferrous.com" in about
+    assert "info@synferrous.com" in about
+    assert "privacy@" not in about
 
     blocks = client.get("/api/layouts/home").json()["blocks"]
     props = {b["type"]: b["props"] for b in blocks}
@@ -65,6 +67,43 @@ def test_live_content_is_fully_rebranded(client):
         client.get("/api/seo/routes").json(),
     ])
     assert not OLD.search(public), OLD.search(public)
+
+
+def test_databases_already_rebranded_move_to_info_address(client):
+    """Covers a live database where the rebrand ran before info@ was chosen."""
+    from seed import migrate_contact_email_info
+    run(dbm.db.migrations.delete_many({"id": "contact_email_info"}))
+    run(dbm.db.settings.update_one({"id": "site"}, {"$set": {"email": "hello@synferrous.com"}}))
+    run(dbm.db.pages.update_one({"slug": "privacy"}, {"$set": {
+        "content": "Write to privacy@synferrous.com or legal@synferrous.com."}}))
+    run(migrate_contact_email_info())
+    assert client.get("/api/settings").json()["email"] == "info@synferrous.com"
+    assert client.get("/api/pages/privacy").json()["content"] == \
+        "Write to info@synferrous.com or info@synferrous.com."
+
+
+def test_every_published_address_is_the_real_mailbox(client):
+    """Nothing public should point at an address nobody receives."""
+    def strings(x):
+        if isinstance(x, str):
+            yield x
+        elif isinstance(x, dict):
+            for v in x.values():
+                yield from strings(v)
+        elif isinstance(x, list):
+            for v in x:
+                yield from strings(v)
+
+    # Scan the real text, not a JSON dump — json.dumps turns a newline before
+    # an address into a literal "\n", which a regex then reads as "ninfo@".
+    public = "\n".join(strings([
+        client.get("/api/settings").json(),
+        client.get("/api/pages/about").json(),
+        client.get("/api/pages/privacy").json(),
+        client.get("/api/pages/terms").json(),
+    ]))
+    addresses = set(re.findall(r"[\w.+-]+@synferrous\.com", public))
+    assert addresses == {"info@synferrous.com"}, addresses
 
 
 def test_migration_runs_once_so_later_edits_stick(client):

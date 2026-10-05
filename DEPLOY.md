@@ -174,11 +174,14 @@ Vercel → **Deployments** → latest → **Redeploy**. The build log should end
 *"refusing to write canonical URLs"*, `SITE_URL` isn't set yet — fix 6b first.
 
 ### 6d. Email on the new domain
-The site publishes **hello@synferrous.com** (and the Privacy/Terms pages mention
-`privacy@`, `legal@` and `security@`). Make sure mail to those addresses reaches
-you — set up a mailbox or forwarding at your registrar or a mail provider, ideally
-a catch-all. To send lead alerts *from* the domain, verify `synferrous.com` in Resend
-(it gives you DNS records), then set `SENDER_EMAIL` on Render, e.g. `alerts@synferrous.com`.
+The site, Privacy and Terms pages all publish one address: **info@synferrous.com**.
+Make sure it receives mail before launch. Change it any time in Admin → Site
+settings → Email; the legal pages are edited under Admin → Pages.
+
+Also set `LEAD_NOTIFICATION_EMAIL=info@synferrous.com` on Render so new leads are
+emailed to you. To send those alerts *from* the domain, verify `synferrous.com` in
+Resend (it gives you DNS records — keep your mail provider's SPF entry alongside Resend's), then set
+`SENDER_EMAIL` on Render, e.g. `alerts@synferrous.com`.
 
 ### 6e. Image storage (if you've done Step 5)
 CloudFormation → `rk-media` → **Update** → *Use current template* → set

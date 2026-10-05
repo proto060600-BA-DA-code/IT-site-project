@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import BlockRenderer from "@/components/blocks";
+import { useSettings } from "@/contexts/SettingsContext";
 
 /**
  * The homepage is composed from a saved block layout (Admin → Page builder).
@@ -21,6 +22,7 @@ const DEFAULT_LAYOUT = [
 ];
 
 export default function Home() {
+  const s = useSettings();
   const [banners, setBanners] = useState([]);
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -49,19 +51,20 @@ export default function Home() {
         ctx={{ banners, services, categories }}
       />
 
-      {/* JSON-LD Organization */}
+      {/* JSON-LD Organization — read from Site settings, so the email and
+          phone here can never disagree with the footer. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          "name": "Synferrous",
-          "description": "IT Business Analysis solutions and AI product building",
-          "areaServed": "Worldwide",
-          "address": { "@type": "PostalAddress", "addressLocality": "Delhi NCR", "addressCountry": "IN" },
-          "telephone": "+91-98735-56197",
-          "email": "hello@synferrous.com",
-        }) }}
+          "name": s.brand_name,
+          "description": s.footer_description,
+          "areaServed": "IN",
+          "address": { "@type": "PostalAddress", "addressLocality": s.address, "addressCountry": "IN" },
+          "telephone": s.phone,
+          "email": s.email,
+        }).replace(/</g, "\\u003c") }}
       />
     </div>
   );
