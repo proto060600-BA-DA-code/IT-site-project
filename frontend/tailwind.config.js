@@ -24,6 +24,18 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
+        // Brand palette as real Tailwind colours. Classes like
+        // `bg-[var(--navy-950)]/95` look valid but Tailwind cannot apply an
+        // opacity modifier to a CSS variable holding a hex value, so it drops
+        // the whole class silently. These support `bg-navy-950/95` properly.
+        navy: {
+          950: 'rgb(13 19 33 / <alpha-value>)',
+          900: 'rgb(27 38 59 / <alpha-value>)',
+        },
+        gold: {
+          DEFAULT: 'rgb(200 160 106 / <alpha-value>)',
+          deep: 'rgb(168 129 77 / <alpha-value>)',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

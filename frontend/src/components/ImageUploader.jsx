@@ -99,7 +99,7 @@ export default function ImageUploader({ value, onChange, folder = "uploads", tes
               data-testid={`${testid}-pick`}
               onClick={() => inputRef.current?.click()}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[var(--brand-teal)] border border-[var(--brand-teal)] px-3 py-1.5 hover:bg-[var(--brand-teal)] hover:text-white transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[var(--brand-ink)] border border-[var(--brand-ink)] px-3 py-1.5 hover:bg-[var(--selected-bg)] hover:text-[var(--selected-fg)] hover:border-[var(--selected-bg)] transition-colors disabled:opacity-50"
             >
               <UploadSimple size={12} weight="bold" /> {busy ? "Uploading…" : "Upload"}
             </button>

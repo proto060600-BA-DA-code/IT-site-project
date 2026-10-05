@@ -37,21 +37,21 @@ export default function Footer() {
 
         <div className="md:col-span-3">
           <div className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--gold)] mb-4">{s.footer_links_heading}</div>
-          <ul className="space-y-2.5 text-sm">
-            <li><Link to="/about" data-testid="footer-link-about" className="text-white/80 hover:text-white">About us</Link></li>
-            <li><Link to="/services" data-testid="footer-link-services" className="text-white/80 hover:text-white">Services</Link></li>
-            <li><Link to="/insights" data-testid="footer-link-insights" className="text-white/80 hover:text-white">Insights</Link></li>
-            <li><Link to="/contact" data-testid="footer-link-contact" className="text-white/80 hover:text-white">Contact Us</Link></li>
-            <li><Link to="/privacy" data-testid="footer-link-privacy" className="text-white/80 hover:text-white">Privacy Policy</Link></li>
-            <li><Link to="/terms" data-testid="footer-link-terms" className="text-white/80 hover:text-white">Terms &amp; Conditions</Link></li>
+          <ul className="space-y-0.5 text-sm">
+            <li><Link to="/about" data-testid="footer-link-about" className="inline-block py-1.5 text-white/80 hover:text-white">About us</Link></li>
+            <li><Link to="/services" data-testid="footer-link-services" className="inline-block py-1.5 text-white/80 hover:text-white">Services</Link></li>
+            <li><Link to="/insights" data-testid="footer-link-insights" className="inline-block py-1.5 text-white/80 hover:text-white">Insights</Link></li>
+            <li><Link to="/contact" data-testid="footer-link-contact" className="inline-block py-1.5 text-white/80 hover:text-white">Contact Us</Link></li>
+            <li><Link to="/privacy" data-testid="footer-link-privacy" className="inline-block py-1.5 text-white/80 hover:text-white">Privacy Policy</Link></li>
+            <li><Link to="/terms" data-testid="footer-link-terms" className="inline-block py-1.5 text-white/80 hover:text-white">Terms &amp; Conditions</Link></li>
           </ul>
         </div>
 
         <div className="md:col-span-4">
           <div className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--gold)] mb-4">{s.footer_contact_heading}</div>
           <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-3"><Phone size={16} className="mt-0.5 text-[var(--gold)]" /><a href={`tel:${s.phone}`} className="text-white/90 hover:text-white" data-testid="footer-phone">{s.phone}</a></li>
-            <li className="flex items-start gap-3"><EnvelopeSimple size={16} className="mt-0.5 text-[var(--gold)]" /><a href={`mailto:${s.email}`} className="text-white/90 hover:text-white" data-testid="footer-email">{s.email}</a></li>
+            <li className="flex items-start gap-3"><Phone size={16} className="mt-0.5 text-[var(--gold)]" /><a href={`tel:${s.phone}`} className="inline-block py-1 -my-1 text-white/90 hover:text-white" data-testid="footer-phone">{s.phone}</a></li>
+            <li className="flex items-start gap-3"><EnvelopeSimple size={16} className="mt-0.5 text-[var(--gold)]" /><a href={`mailto:${s.email}`} className="inline-block py-1 -my-1 text-white/90 hover:text-white break-all" data-testid="footer-email">{s.email}</a></li>
             <li className="flex items-start gap-3"><MapPin size={16} className="mt-0.5 text-[var(--gold)]" /><span className="text-white/90" data-testid="footer-address">{s.address}</span></li>
           </ul>
         </div>

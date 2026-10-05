@@ -153,7 +153,7 @@ export default function MediaLibrary({ onPick, selectable = false, compact = fal
       data-testid="media-library"
     >
       {dragOver && (
-        <div className="absolute inset-0 bg-[var(--navy-950)]/80 z-20 flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 bg-navy-950/80 z-20 flex items-center justify-center pointer-events-none">
           <div className="text-[var(--off-white)] text-sm tracking-wide uppercase">Drop to upload</div>
         </div>
       )}

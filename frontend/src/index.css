@@ -116,6 +116,13 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
     letter-spacing: 0;
 }
 
+/* ── Component classes ────────────────────────────────────────────────
+   Inside @layer components so Tailwind utilities override them. Defined
+   unlayered (as they were), `.btn-accent { display:inline-flex }` came after
+   the utilities in the stylesheet and beat `hidden` — so a button marked
+   `hidden md:inline-flex` still showed on phones. */
+@layer components {
+
 /* eyebrow / kicker tag */
 .eyebrow {
     display: inline-flex;
@@ -243,6 +250,8 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
     background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
 }
 
+} /* end @layer components (part 1) */
+
 /* Subtle entrance */
 @keyframes rise {
     from { opacity: 0; transform: translateY(12px); }
@@ -253,6 +262,12 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
 .rise-d2 { animation-delay: .16s; }
 .rise-d3 { animation-delay: .24s; }
 .rise-d4 { animation-delay: .32s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .rise, .rise-d1, .rise-d2, .rise-d3, .rise-d4 { animation: none; }
+}
+
+@layer components {
 
 /* Marker style headings */
 .marker {
@@ -277,21 +292,84 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
 
 /* Chat widget */
 .iris-bubble {
-    background: var(--brand-teal);
-    color: white;
-    padding: 0.85rem 1rem;
-    border-radius: 0 14px 14px 14px;
-    max-width: 78%;
+    background: var(--navy-950);
+    color: var(--off-white);
+    padding: 0.75rem 0.95rem;
+    border-radius: 2px 14px 14px 14px;
+    max-width: 85%;
+    overflow-wrap: anywhere;
 }
 .iris-bubble-user {
-    background: var(--paper-muted);
-    color: var(--ink);
-    padding: 0.85rem 1rem;
-    border-radius: 14px 0 14px 14px;
-    max-width: 78%;
+    background: var(--gold);
+    color: var(--navy-950);
+    padding: 0.75rem 0.95rem;
+    border-radius: 14px 2px 14px 14px;
+    max-width: 85%;
     margin-left: auto;
+    overflow-wrap: anywhere;
 }
+/* Markdown inside assistant replies */
+.iris-bubble p { margin: 0 0 0.5rem; color: inherit; }
+.iris-bubble p:last-child { margin-bottom: 0; }
+.iris-bubble ul { list-style: disc; padding-left: 1.1rem; margin: 0.25rem 0 0.5rem; }
+.iris-bubble strong { color: var(--gold); font-weight: 600; }
+.iris-bubble a { color: var(--gold); text-decoration: underline; }
 
 /* Hide scrollbar in chat panel */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+} /* end @layer components (part 2) */
+
+/* ── iPhone ───────────────────────────────────────────────────────────
+   iOS Safari zooms the whole page when a focused field's text is under
+   16px, and doesn't zoom back out. Every form on the site used 14px. */
+@media (max-width: 767px) {
+    input, select, textarea { font-size: 16px !important; }
+}
+
+/* ── Admin dark mode ──────────────────────────────────────────────────
+   Scoped to the admin shell via [data-theme="dark"]; the public site is
+   unaffected. Admin screens read colours through these variables, so
+   redefining them here retints everything, including modals rendered
+   inside the shell. */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --ink: #E6E9EF;
+    --ink-soft: #98A3B6;
+    --paper: #0B1020;
+    --paper-surface: #0D1321;
+    --paper-muted: #1B263B;
+    --line: rgba(201, 210, 222, 0.14);
+    --brand-ink: #C9D2DE;           /* icons and text links */
+    --brand-teal: #C9D2DE;
+    --selected-bg: var(--gold);     /* selected chips, active rows */
+    --selected-fg: var(--navy-950);
+    --card: #121A2C;
+    /* shadcn tokens — the global `* { border-color }` rule reads these */
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --background: 222 43% 9%;
+    --foreground: 220 20% 92%;
+    background: var(--paper-surface);
+    color: var(--ink);
+}
+:root, [data-theme="light"] {
+    --selected-bg: var(--navy-950);
+    --selected-fg: var(--off-white);
+    --card: #FFFFFF;
+}
+/* Admin markup uses bg-white for cards and panels throughout. */
+[data-theme="dark"] .bg-white { background-color: var(--card); }
+[data-theme="dark"] .eyebrow { color: var(--gold); }
+[data-theme="dark"] .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.12); }
+[data-theme="dark"] .bg-amber-50 { background-color: rgba(245, 158, 11, 0.12); }
+[data-theme="dark"] .text-emerald-700 { color: #6EE7B7; }
+[data-theme="dark"] .text-red-700 { color: #FCA5A5; }
+[data-theme="dark"] .text-amber-700 { color: #FCD34D; }
+[data-theme="dark"] .btn-ghost:hover { background: var(--paper-muted); border-color: var(--gold); }
+[data-theme="dark"] .btn-accent:hover { color: var(--navy-950); background: var(--gold-deep); }
+[data-theme="dark"] .recharts-tooltip-wrapper .recharts-default-tooltip {
+    background: var(--card) !important;
+    border-color: var(--line) !important;
+}

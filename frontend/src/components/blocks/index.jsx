@@ -51,25 +51,25 @@ function HeroBlock({ props: p, ctx }) {
           }} />
         </div>
       )}
-      <div className="absolute inset-0 lg:hidden bg-[var(--navy-950)]/80 pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 lg:hidden bg-navy-950/80 pointer-events-none" aria-hidden="true" />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+      <div className="relative max-w-7xl mx-auto px-5 lg:px-10 py-14 sm:py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
         <div className="lg:col-span-7 rise">
           <div className="eyebrow eyebrow-invert mb-6" data-testid="hero-eyebrow">
             {t(p.eyebrow, "IT Business Analysis · AI Product Building · Delhi NCR")}
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.02] max-w-3xl">
+          <h1 className="text-[2.6rem] sm:text-6xl lg:text-7xl tracking-tight leading-[1.04] max-w-3xl">
             {title || (<>Business analysis meets <span className="marker">AI product</span> building.</>)}
           </h1>
           <p className="mt-6 text-lg on-dark-soft max-w-xl leading-relaxed">
             {t(p.subtitle, banner.subtitle) ||
               "From requirements and process discovery to shipped AI products and automations — led by senior analysts who build, not just advise."}
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link to={t(p.cta_link, banner.cta_link) || "/contact"} data-testid="hero-primary-cta" className="btn-accent">
+          <div className="mt-9 flex flex-col sm:flex-row gap-3">
+            <Link to={t(p.cta_link, banner.cta_link) || "/contact"} data-testid="hero-primary-cta" className="btn-accent justify-center">
               {t(p.cta_label, banner.cta_label) || "Book a Consultation"} <ArrowRight size={16} weight="bold" />
             </Link>
-            <Link to={t(p.secondary_link, "/services")} data-testid="hero-secondary-cta" className="btn-ghost-invert">
+            <Link to={t(p.secondary_link, "/services")} data-testid="hero-secondary-cta" className="btn-ghost-invert justify-center">
               <PlayCircle size={18} weight="fill" /> {t(p.secondary_label, "Explore services")}
             </Link>
           </div>
@@ -77,7 +77,7 @@ function HeroBlock({ props: p, ctx }) {
 
         {p.show_stats !== false && (
           <div className="lg:col-span-5 rise rise-d2">
-            <div className="border border-[var(--line-dark)] bg-[var(--navy-900)]/80 backdrop-blur-sm p-6">
+            <div className="border border-[var(--line-dark)] bg-navy-900/85 backdrop-blur-sm p-6">
               <div className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--gold)] mb-3">
                 {t(p.stats_label, "Selected outcomes")}
               </div>
@@ -213,7 +213,7 @@ function ServicesCarouselBlock({ props: p, ctx }) {
             <div className="eyebrow mb-3">{t(p.eyebrow, "Featured services")}</div>
             <h2 className="text-4xl tracking-tight max-w-xl">{t(p.title, "Senior consulting, productized.")}</h2>
           </div>
-          <Link to="/services" data-testid="view-all-services" className="text-sm font-mono uppercase tracking-wider text-[var(--brand-ink)] underline-offset-4 hover:underline">
+          <Link to="/services" data-testid="view-all-services" className="inline-block py-2.5 text-sm font-mono uppercase tracking-wider text-[var(--brand-ink)] underline-offset-4 hover:underline">
             {t(p.link_label, "View all services →")}
           </Link>
         </div>

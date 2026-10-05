@@ -141,14 +141,14 @@ export default function AdminRoles() {
               onClick={() => setSelected(r)}
               data-testid={`role-${r.slug}`}
               className={`w-full text-left px-4 py-3 border-b border-[var(--line)] last:border-0 transition-colors ${
-                selected?.id === r.id ? "bg-[var(--brand-ink)] text-[var(--off-white)]" : "hover:bg-[var(--paper-surface)]"
+                selected?.id === r.id ? "bg-[var(--selected-bg)] text-[var(--selected-fg)]" : "hover:bg-[var(--paper-surface)]"
               }`}
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm font-medium">{r.name}</span>
-                {r.system && <LockSimple size={12} className={selected?.id === r.id ? "text-[var(--gold)]" : "text-[var(--ink-soft)]"} />}
+                {r.system && <LockSimple size={12} className={selected?.id === r.id ? "opacity-70" : "text-[var(--ink-soft)]"} />}
               </div>
-              <div className={`text-[11px] mt-0.5 ${selected?.id === r.id ? "on-dark-muted" : "text-[var(--ink-soft)]"}`}>
+              <div className={`text-[11px] mt-0.5 ${selected?.id === r.id ? "opacity-75" : "text-[var(--ink-soft)]"}`}>
                 {grantedCount(r.permissions)} permissions
               </div>
             </button>

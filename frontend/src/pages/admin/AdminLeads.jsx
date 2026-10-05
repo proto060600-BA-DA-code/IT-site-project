@@ -194,7 +194,7 @@ function Chip({ label, active, onClick, testid, warn }) {
     <button data-testid={testid} onClick={onClick}
       className={`text-xs font-mono uppercase tracking-wider px-3 py-1.5 border transition-colors ${
         active
-          ? warn ? "bg-red-600 text-white border-red-600" : "bg-[var(--brand-ink)] text-white border-[var(--brand-ink)]"
+          ? warn ? "bg-red-600 text-white border-red-600" : "bg-[var(--selected-bg)] text-[var(--selected-fg)] border-[var(--selected-bg)]"
           : "bg-white text-[var(--ink-soft)] border-[var(--line)] hover:border-[var(--brand-ink)]"
       }`}>
       {label}

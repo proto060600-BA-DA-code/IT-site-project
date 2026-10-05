@@ -51,7 +51,7 @@ export default function AdminDashboard() {
                 onClick={() => setRange(r)}
                 data-testid={`range-${r}`}
                 className={`px-3 py-2 text-xs font-mono uppercase tracking-wider transition-colors ${
-                  range === r ? "bg-[var(--brand-ink)] text-[var(--off-white)]" : "text-[var(--ink-soft)] hover:bg-[var(--paper-surface)]"
+                  range === r ? "bg-[var(--selected-bg)] text-[var(--selected-fg)]" : "text-[var(--ink-soft)] hover:bg-[var(--paper-surface)]"
                 }`}
               >
                 {r}d
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
                   <Tooltip contentStyle={{ fontSize: 12, border: "1px solid var(--line)", borderRadius: 0 }} />
                   <Bar dataKey="count">
                     {leads.by_status.map((_, i) => (
-                      <Cell key={i} fill={i === 3 ? "var(--gold)" : "var(--navy-900)"} />
+                      <Cell key={i} fill={i === 3 ? "var(--gold)" : "var(--ink-soft)"} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -198,7 +198,7 @@ function Breakdown({ rows, total }) {
               <span className="text-[var(--ink-soft)] font-mono shrink-0 ml-2">{r.count} · {pct}%</span>
             </div>
             <div className="h-1.5 bg-[var(--paper-muted)]">
-              <div className="h-full bg-[var(--brand-ink)]" style={{ width: `${pct}%` }} />
+              <div className="h-full bg-[var(--selected-bg)]" style={{ width: `${pct}%` }} />
             </div>
           </div>
         );

@@ -18,7 +18,9 @@ export default function Login() {
     try {
       const user = await login(form.email, form.password);
       toast.success(`Welcome back, ${user.name.split(" ")[0]}.`);
-      navigate(user.role === "admin" ? "/admin" : from, { replace: true });
+      // Any user holding an admin role lands in the console, not only the
+      // legacy role === "admin" account.
+      navigate(user.role === "admin" || user.role_id ? "/admin" : from, { replace: true });
     } catch (err) {
       toast.error(err?.response?.data?.detail || "Invalid credentials");
     } finally { setBusy(false); }
