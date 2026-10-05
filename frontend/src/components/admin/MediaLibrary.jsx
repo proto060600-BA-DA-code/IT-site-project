@@ -1,77 +1,34 @@
 /**
  * Media library — shared by the Media page and the field picker.
  *
- * Upload path is unchanged (signed Cloudinary direct upload); this adds the
- * catalogue layer on top so assets can be browsed, searched and reused instead
- * of re-uploaded every time.
+ * Files go through lib/upload.js (resize + re-encode, then straight to S3 or
+ * Cloudinary); this adds the catalogue layer on top so assets can be browsed,
+ * searched and reused instead of re-uploaded every time.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { uploadImage } from "@/lib/upload";
 import { toast } from "sonner";
 import {
   UploadSimple, MagnifyingGlass, Trash, X, CheckCircle, FolderSimple, Image as ImageIcon,
 } from "@phosphor-icons/react";
 
-const MAX_BYTES = 6 * 1024 * 1024;
-
 export function useMediaUpload(folder = "uploads") {
-  const [queue, setQueue] = useState([]); // [{name, pct, status}]
+  const [queue, setQueue] = useState([]); // [{name, status}]
 
   const uploadMany = useCallback(async (files, onDone) => {
     const list = Array.from(files || []).filter(Boolean);
     if (!list.length) return;
 
-    const valid = list.filter((f) => {
-      if (!f.type.startsWith("image/")) { toast.error(`${f.name}: not an image`); return false; }
-      if (f.size > MAX_BYTES) { toast.error(`${f.name}: over 6 MB`); return false; }
-      return true;
-    });
-    if (!valid.length) return;
-
-    setQueue(valid.map((f) => ({ name: f.name, pct: 0, status: "pending" })));
-
-    let sig;
-    try {
-      const res = await api.get(`/cloudinary/signature?folder=${encodeURIComponent(folder + "/")}`);
-      sig = res.data;
-    } catch (e) {
-      toast.error(e?.response?.data?.detail || "Cloudinary is not configured");
-      setQueue([]);
-      return;
-    }
+    setQueue(list.map((f) => ({ name: f.name, status: "pending" })));
 
     const uploaded = [];
-    for (let i = 0; i < valid.length; i++) {
-      const file = valid[i];
+    for (let i = 0; i < list.length; i++) {
+      const file = list[i];
       setQueue((q) => q.map((it, idx) => (idx === i ? { ...it, status: "uploading" } : it)));
       try {
-        const form = new FormData();
-        form.append("file", file);
-        form.append("api_key", sig.api_key);
-        form.append("timestamp", sig.timestamp);
-        form.append("signature", sig.signature);
-        form.append("folder", sig.folder);
-
-        const up = await fetch(`https://api.cloudinary.com/v1_1/${sig.cloud_name}/image/upload`, {
-          method: "POST", body: form,
-        });
-        const json = await up.json();
-        if (!up.ok || !json.secure_url) throw new Error(json.error?.message || "Upload failed");
-
-        // Register in the catalogue so it shows up in the library.
-        const asset = await api.post("/admin/media", {
-          filename: file.name,
-          url: json.secure_url,
-          thumb_url: json.secure_url,
-          public_id: json.public_id || "",
-          folder,
-          mime: file.type,
-          bytes: json.bytes || file.size,
-          width: json.width || 0,
-          height: json.height || 0,
-        });
-        uploaded.push(asset.data);
-        setQueue((q) => q.map((it, idx) => (idx === i ? { ...it, pct: 100, status: "done" } : it)));
+        uploaded.push(await uploadImage(file, folder));
+        setQueue((q) => q.map((it, idx) => (idx === i ? { ...it, status: "done" } : it)));
       } catch (e) {
         setQueue((q) => q.map((it, idx) => (idx === i ? { ...it, status: "error" } : it)));
         toast.error(`${file.name}: ${e.message || "upload failed"}`);
@@ -189,7 +146,7 @@ export default function MediaLibrary({ onPick, selectable = false, compact = fal
             <Trash size={14} /> Delete {selected.length}
           </button>
         )}
-        <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
+        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" multiple className="hidden"
           onChange={(e) => uploadMany(e.target.files, load)} />
       </div>
 

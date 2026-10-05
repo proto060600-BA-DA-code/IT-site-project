@@ -31,3 +31,14 @@ services:
         sync: false
       - key: CHAT_MODEL
         value: claude-sonnet-4-5-20250929
+      # Image storage — see DEPLOY.md Step 5 (values from the CloudFormation Outputs)
+      - key: S3_BUCKET
+        sync: false
+      - key: MEDIA_BASE_URL
+        sync: false
+      - key: AWS_REGION
+        value: ap-south-1
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false

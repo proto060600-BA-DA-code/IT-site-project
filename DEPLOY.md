@@ -89,10 +89,67 @@ Now visit your Vercel URL, go to `/login`, and sign in with the `ADMIN_EMAIL` / 
 
 ---
 
+## Step 5 — Image storage: Amazon S3 + CloudFront
+
+Images uploaded in the admin go straight from the browser into a **private** S3
+bucket and are served through CloudFront. One CloudFormation template creates
+everything; you don't build any of it by hand.
+
+> **AWS Free plan warning.** Accounts opened after July 2025 start on a Free
+> plan that **closes after 6 months** unless upgraded. If that happens, every
+> image on the site disappears. Upgrade to the Paid plan before then — unused
+> credits carry over. Real cost for a site this size: a few cents a month for
+> storage; CloudFront's first 1 TB/month is permanently free.
+
+### 5a. Create the storage (≈5 minutes)
+1. Sign in to the AWS console. Top-right region selector → **Asia Pacific (Mumbai) ap-south-1**.
+2. Search **CloudFormation** → **Create stack** → **With new resources (standard)**.
+3. **Upload a template file** → choose `infra/media-storage.yaml` from this repo → Next.
+4. Stack name: `rk-media`. Leave **BucketName** blank. In **AllowedOrigins**, list every
+   site that uploads, comma-separated, no trailing slashes — e.g.
+   `https://rk-labs.vercel.app,http://localhost:3000`. Next → Next.
+5. Tick **"I acknowledge that AWS CloudFormation might create IAM resources"** → **Submit**.
+6. Wait for `CREATE_COMPLETE` (CloudFront takes 3–5 minutes). Open the **Outputs** tab — keep it open.
+
+### 5b. Create the backend's access key
+1. Outputs → copy the **UploaderUser** value. Search **IAM** → **Users** → open that user.
+2. **Security credentials** tab → **Create access key** → *Application running outside AWS* → Create.
+3. Copy the **Access key ID** and **Secret access key**. The secret is shown **once** —
+   paste it straight into Render (next step); don't save it in a file, chat, or the repo.
+
+This user can only read, write and delete files under `media/` in this one bucket —
+nothing else in your AWS account.
+
+### 5c. Add the settings on Render
+Render → `ascendai-backend` → **Environment** → add:
+
+| Key | Value |
+|-----|-------|
+| `S3_BUCKET` | Outputs → **S3Bucket** |
+| `MEDIA_BASE_URL` | Outputs → **MediaBaseUrl** (starts `https://d…cloudfront.net`) |
+| `AWS_REGION` | `ap-south-1` |
+| `AWS_ACCESS_KEY_ID` | from 5b |
+| `AWS_SECRET_ACCESS_KEY` | from 5b |
+
+Save. After the redeploy, **Admin → Media → Upload** should work. Uploads are
+resized to at most 2400px and converted to WebP in the browser first, which also
+strips location data from phone photos.
+
+### Rolling back
+Remove `S3_BUCKET` on Render and the backend falls back to Cloudinary (if its keys
+are set). Images already uploaded keep working — each one remembers where it lives.
+
+### If an access key ever leaks
+IAM → the uploader user → **Security credentials** → deactivate the old key, create a
+new one, update Render. The key can only touch the media bucket, which limits the damage.
+
+---
+
 ## What's already done for you in the repo
 - `backend/requirements.txt` — removed the Emergent-only package (no longer used) and added `anthropic`, so `pip install` succeeds on Render.
 - `render.yaml` — an optional Render Blueprint with the start command and env-var slots pre-listed.
-- `frontend/vercel.json` — sets `npm install --legacy-peer-deps` and SPA routing (so refreshing `/services` doesn't 404).
+- `frontend/vercel.json` — sets `npm install --legacy-peer-deps`, routes each real page to the app, and returns a genuine 404 for unknown URLs (no catch-all). Static assets cache for a year; HTML always revalidates.
+- `infra/media-storage.yaml` — the CloudFormation template for Step 5.
 - `frontend/package.json` — pinned `ajv@8` so the Vercel build won't hit the error you saw locally.
 - `.env` files are gitignored — your secrets won't be pushed to GitHub.
 

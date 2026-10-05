@@ -1,0 +1,177 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  RK AI Labs media storage. A private, encrypted S3 bucket served only through
+  CloudFront (Origin Access Control), plus a least-privilege IAM user the
+  backend uses to sign uploads. Deploy in ap-south-1 (Mumbai).
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: ""
+    Description: >
+      Optional. Must be globally unique, lowercase. Leave blank and AWS
+      generates one (recommended).
+  AllowedOrigins:
+    Type: CommaDelimitedList
+    Default: "https://rk-labs.vercel.app,http://localhost:3000"
+    Description: >
+      Sites allowed to upload from the browser (no trailing slash). Add your
+      custom domain here when you have one.
+
+Conditions:
+  HasBucketName: !Not [!Equals [!Ref BucketName, ""]]
+
+Resources:
+  # ── Bucket ───────────────────────────────────────────────────────────────
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    # Deleting the stack must never delete your images.
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !If [HasBucketName, !Ref BucketName, !Ref AWS::NoValue]
+      # Nothing in this bucket is ever public. Readers go through CloudFront.
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      # Browser uploads use a signed POST straight to S3.
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [POST]
+            AllowedOrigins: !Ref AllowedOrigins
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+      LifecycleConfiguration:
+        Rules:
+          - Id: abort-incomplete-uploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+
+  # ── CDN ──────────────────────────────────────────────────────────────────
+  MediaOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-oac"
+        Description: CloudFront signs its reads from the private media bucket
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  MediaHeaders:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: !Sub "${AWS::StackName}-media-headers"
+        Comment: Locks down anything served from the media domain
+        SecurityHeadersConfig:
+          ContentTypeOptions:
+            Override: true            # X-Content-Type-Options: nosniff
+          StrictTransportSecurity:
+            AccessControlMaxAgeSec: 31536000
+            IncludeSubdomains: true
+            Override: true
+          ReferrerPolicy:
+            ReferrerPolicy: strict-origin-when-cross-origin
+            Override: true
+          # If a file is ever opened directly, it can't run script or load
+          # anything else. Images still display normally in <img> tags.
+          ContentSecurityPolicy:
+            ContentSecurityPolicy: "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; sandbox"
+            Override: true
+
+  MediaCDN:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub "${AWS::StackName} media"
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        # Includes India and Asia edge locations; excludes only the priciest regions.
+        PriceClass: PriceClass_200
+        Origins:
+          - Id: s3-media
+            DomainName: !GetAtt MediaBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt MediaOAC.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: s3-media
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          # AWS managed "CachingOptimized" policy.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          ResponseHeadersPolicyId: !Ref MediaHeaders
+
+  MediaBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MediaBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Only THIS distribution may read, and only under media/.
+          - Sid: AllowCloudFrontRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${MediaBucket.Arn}/media/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${MediaCDN}"
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !GetAtt MediaBucket.Arn
+              - !Sub "${MediaBucket.Arn}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+
+  # ── Backend credentials ──────────────────────────────────────────────────
+  # The API server signs uploads as this user. It can touch objects under
+  # media/ in this one bucket — nothing else in your AWS account.
+  UploaderUser:
+    Type: AWS::IAM::User
+    Properties:
+      Policies:
+        - PolicyName: media-objects-only
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject     # sign browser uploads
+                  - s3:GetObject     # verify uploaded bytes
+                  - s3:DeleteObject  # delete from the media library
+                Resource: !Sub "${MediaBucket.Arn}/media/*"
+
+Outputs:
+  S3Bucket:
+    Description: Set as S3_BUCKET on Render
+    Value: !Ref MediaBucket
+  MediaBaseUrl:
+    Description: Set as MEDIA_BASE_URL on Render
+    Value: !Sub "https://${MediaCDN.DomainName}"
+  AwsRegion:
+    Description: Set as AWS_REGION on Render
+    Value: !Ref AWS::Region
+  UploaderUser:
+    Description: Create an access key for this IAM user (Security credentials tab)
+    Value: !Ref UploaderUser

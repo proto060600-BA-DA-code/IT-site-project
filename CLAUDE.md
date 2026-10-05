@@ -22,6 +22,12 @@ Consulting-studio site: FastAPI + MongoDB backend (`backend/`, Render service
   action from the method. Every admin router must use it or `require_permission`
   — never the older `require_admin` (it lets any role in).
 - **Audit log:** ASGI middleware records every `/api/admin` write automatically.
+- **Media:** `backend/storage.py`. S3 (private bucket, served via CloudFront with
+  OAC; infra in `infra/media-storage.yaml`) when `S3_BUCKET` is set, Cloudinary as
+  fallback. The browser uploads directly with a presigned POST; the server picks
+  the key, pins type/size/cache, sniffs magic bytes before cataloguing, and
+  derives the public URL itself. All frontend uploads go through
+  `frontend/src/lib/upload.js`. No SVG — it can carry script.
 - **Copy:** site chrome lives in Site settings; homepage copy lives in Page
   builder block props. Don't hardcode user-facing strings in JSX.
 

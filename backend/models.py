@@ -145,7 +145,8 @@ class Asset(BaseDoc):
     filename: str
     url: str
     thumb_url: Optional[str] = ""
-    public_id: Optional[str] = ""      # Cloudinary handle, for deletion
+    public_id: Optional[str] = ""      # Cloudinary handle, or the S3 object key
+    storage: str = "cloudinary"        # "s3" | "cloudinary" | "external"
     folder: str = "uploads"
     mime: Optional[str] = ""
     bytes: int = 0
@@ -156,7 +157,10 @@ class Asset(BaseDoc):
 
 class AssetIn(BaseModel):
     filename: str
-    url: str
+    # Required for Cloudinary; ignored for S3, where the server derives the
+    # URL from the key so a client can't register an arbitrary address.
+    url: Optional[str] = ""
+    storage_key: Optional[str] = ""   # S3 uploads: the key from the upload target
     thumb_url: Optional[str] = ""
     public_id: Optional[str] = ""
     folder: str = "uploads"

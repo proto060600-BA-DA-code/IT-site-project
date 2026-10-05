@@ -110,6 +110,9 @@ class AuditMiddleware:
             scope.get("type") != "http"
             or scope.get("method") not in WRITE_METHODS
             or not scope.get("path", "").startswith("/api/admin/")
+            # Issuing an upload URL changes nothing — the actual write is the
+            # registration that follows, which is audited.
+            or scope.get("path", "").endswith("/upload-target")
         ):
             return await self.app(scope, receive, send)
 
