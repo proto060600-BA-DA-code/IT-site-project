@@ -97,6 +97,62 @@ async def migrate_catalogue_v2():
     await db.migrations.insert_one({"id": "catalogue_v2", "at": now_iso()})
 
 
+# ── Rebrand to Synferrous (Oct 2026) ────────────────────────────────────────
+# Ordered: the more specific phrases must be replaced before the bare name.
+REBRAND_REPLACEMENTS = [
+    ("RK AI Labs Team", "Rohan Kapoor"),   # no team — a named author is more credible
+    ("RK AI Labs", "Synferrous"),
+    ("hello@iamrohankapoor.com", "hello@synferrous.com"),
+    ("iamrohankapoor.com", "synferrous.com"),
+]
+# Seeded values that made claims the business can't evidence. Replaced only
+# when a field still holds exactly the seeded text — an edit is left alone.
+REBRAND_EXACT = {
+    "From requirements to shipped AI products — led by senior analysts who build, not just advise.":
+        "Requirements, e-commerce builds and practical AI — scoped and delivered by the same person, from first conversation to launch.",
+    "What we do": "Services",
+}
+# Content only. Users, leads, chat, audit log and media are never rewritten.
+REBRAND_COLLECTIONS = ["settings", "pages", "layouts", "posts", "services", "categories", "banners"]
+_REBRAND_SKIP_KEYS = {"_id", "id", "slug"}
+
+
+def rebrand_value(value):
+    if isinstance(value, str):
+        if value in REBRAND_EXACT:
+            return REBRAND_EXACT[value]
+        for old, new in REBRAND_REPLACEMENTS:
+            value = value.replace(old, new)
+        return value
+    if isinstance(value, list):
+        return [rebrand_value(v) for v in value]
+    if isinstance(value, dict):
+        return {k: (v if k in _REBRAND_SKIP_KEYS else rebrand_value(v)) for k, v in value.items()}
+    return value
+
+
+async def migrate_rebrand_synferrous():
+    """One-time rewrite of the old brand, domain and emails in stored content.
+    Recorded in db.migrations, so it never runs twice — anything an admin
+    changes afterwards is left alone."""
+    if await db.migrations.find_one({"id": "rebrand_synferrous"}):
+        return
+    changed = 0
+    for coll in REBRAND_COLLECTIONS:
+        async for doc in db[coll].find({}, {"_id": 0}):
+            if "id" not in doc:
+                continue
+            updates = {
+                k: new for k, v in doc.items()
+                if k not in _REBRAND_SKIP_KEYS and (new := rebrand_value(v)) != v
+            }
+            if updates:
+                updates["updated_at"] = now_iso()
+                await db[coll].update_one({"id": doc["id"]}, {"$set": updates})
+                changed += 1
+    await db.migrations.insert_one({"id": "rebrand_synferrous", "at": now_iso(), "documents": changed})
+
+
 async def seed_admin():
     email = os.environ["ADMIN_EMAIL"].lower()
     password = os.environ["ADMIN_PASSWORD"]
@@ -108,7 +164,7 @@ async def seed_admin():
         return
     admin = User(
         email=email,
-        name="RK AI Labs Admin",
+        name="Synferrous Admin",
         password_hash=hash_password(password),
         role="admin",
     )
@@ -123,7 +179,7 @@ async def seed_content():
             "title": "What a Business Analyst actually does on an AI project",
             "excerpt": "AI projects fail for the same reason most IT projects fail: fuzzy problems, unclear success criteria and no owner for the trade-offs. Here is where a senior BA earns their keep.",
             "cover_image": "https://images.unsplash.com/photo-1552664730-d307ca884978",
-            "author": "RK AI Labs Team",
+            "author": "Rohan Kapoor",
             "tags": ["Business Analysis", "AI", "Delivery"],
             "meta_description": "How a senior Business Analyst de-risks an AI product build, from problem framing to acceptance criteria.",
             "status": "published",
@@ -153,7 +209,7 @@ Get those four artifacts right and the build is the easy part.
             "title": "From PRD to prototype: shipping an AI MVP in six weeks",
             "excerpt": "A repeatable six-week cadence for taking an AI product idea from problem statement to a working prototype real users can try.",
             "cover_image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7",
-            "author": "RK AI Labs Team",
+            "author": "Rohan Kapoor",
             "tags": ["AI Product", "MVP", "Delivery"],
             "meta_description": "A defensible six-week cadence for building an AI MVP, from discovery to a usable prototype.",
             "status": "published",
@@ -184,7 +240,7 @@ Keep the scope brutal, instrument everything, and let the pilot decide.
             "title": "The fractional BA playbook: what good looks like at 20 hours a week",
             "excerpt": "A senior Business Analyst, fractional, is one of the highest-leverage additions a digital or AI team can make. Here is how to set the engagement up to actually ship.",
             "cover_image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
-            "author": "RK AI Labs Team",
+            "author": "Rohan Kapoor",
             "tags": ["Business Analysis", "Operations"],
             "meta_description": "How to structure a fractional Business Analyst engagement that ships.",
             "status": "published",
@@ -235,12 +291,12 @@ Treating the fractional BA as a part-time project manager. They are not. They ar
         {"slug": "about", **ABOUT_PAGE},
         {"slug": "privacy",
          "title": "Privacy Policy",
-         "meta_description": "How RK AI Labs handles your data.",
+         "meta_description": "How Synferrous handles your data.",
          "content": """**Effective date:** January 1, 2026
 
 > **[PLACEHOLDER — have this reviewed by a qualified legal advisor before publishing.]**
 
-RK AI Labs ("we", "us") respects your privacy. This policy explains what data we collect via iamrohankapoor.com (the "Site") and how we use it.
+Synferrous ("we", "us") respects your privacy. This policy explains what data we collect via synferrous.com (the "Site") and how we use it.
 
 ## 1. Information we collect
 - **Contact data** you provide via forms: name, email, phone, company, message.
@@ -259,25 +315,25 @@ We do **not** sell your data. We share it only with:
 - Authorities if required by law.
 
 ## 4. Retention
-Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at privacy@iamrohankapoor.com.
+Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at privacy@synferrous.com.
 
 ## 5. Your rights
-Subject to applicable law, you may request access, correction, deletion and portability of your data. Email privacy@iamrohankapoor.com.
+Subject to applicable law, you may request access, correction, deletion and portability of your data. Email privacy@synferrous.com.
 
 ## 6. Cookies
 We use a minimal session cookie for authentication. No third-party advertising cookies.
 
 ## 7. Contact
-RK AI Labs, Delhi NCR, India — privacy@iamrohankapoor.com
+Synferrous, Delhi NCR, India — privacy@synferrous.com
 """},
         {"slug": "terms",
          "title": "Terms & Conditions",
-         "meta_description": "Terms of use for the RK AI Labs website.",
+         "meta_description": "Terms of use for the Synferrous website.",
          "content": """**Last updated:** January 1, 2026
 
 > **[PLACEHOLDER — have this reviewed by a qualified legal advisor before publishing.]**
 
-By accessing iamrohankapoor.com (the "Site") you agree to these Terms.
+By accessing synferrous.com (the "Site") you agree to these Terms.
 
 ## 1. Use of the Site
 You may use the Site for lawful informational purposes only. You may not scrape, reverse-engineer or attempt to disrupt the Site or our AI assistant.
@@ -286,16 +342,16 @@ You may use the Site for lawful informational purposes only. You may not scrape,
 Content on this Site, including responses from our AI assistant Aria, is provided for general informational purposes and does not constitute professional consulting advice. Engagement letters and signed statements of work govern any actual consulting work.
 
 ## 3. Intellectual property
-All trademarks, logos, copy, designs and code on the Site are owned by RK AI Labs or our licensors. You may not reproduce them without written permission.
+All trademarks, logos, copy, designs and code on the Site are owned by Synferrous or our licensors. You may not reproduce them without written permission.
 
 ## 4. AI assistant disclaimer
 The AI assistant ("Aria") may generate inaccurate or out-of-date information. Do not rely on it for binding decisions. Pricing displayed by Aria is indicative; final pricing is confirmed in writing.
 
 ## 5. Accounts
-You are responsible for safeguarding your account credentials. Notify us immediately at security@iamrohankapoor.com of any unauthorized use.
+You are responsible for safeguarding your account credentials. Notify us immediately at security@synferrous.com of any unauthorized use.
 
 ## 6. Limitation of liability
-To the maximum extent permitted by law, RK AI Labs is not liable for indirect, incidental or consequential damages arising from your use of the Site.
+To the maximum extent permitted by law, Synferrous is not liable for indirect, incidental or consequential damages arising from your use of the Site.
 
 ## 7. Governing law
 These Terms are governed by the laws of India. Disputes will be subject to the exclusive jurisdiction of the courts of Delhi, India.
@@ -304,7 +360,7 @@ These Terms are governed by the laws of India. Disputes will be subject to the e
 We may update these Terms. The "Last updated" date at the top reflects the latest revision.
 
 ## 9. Contact
-legal@iamrohankapoor.com
+legal@synferrous.com
 """},
     ]
     for p in pages_seed:
@@ -327,3 +383,5 @@ async def run_all():
     await upgrade_placeholder_about()
     await seed_layouts()
     await seed_settings()
+    # Last, so it sees every seeded or pre-existing document.
+    await migrate_rebrand_synferrous()

@@ -1,4 +1,4 @@
-# Production dependencies for the RK AI Labs backend (Render).
+# Production dependencies for the Synferrous backend (Render).
 # Only what the app actually imports — pip pulls transitive deps
 # (starlette, anyio, pymongo drivers, httpx, etc.) automatically.
 fastapi==0.110.1

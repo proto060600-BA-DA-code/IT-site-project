@@ -17,7 +17,7 @@ export default function InsightsList() {
       <section className="border-b border-[var(--line)] bg-[var(--paper-surface)]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
           <div className="eyebrow mb-4">Insights</div>
-          <h1 className="text-5xl sm:text-6xl tracking-tight max-w-3xl">Field notes from senior analysts who build.</h1>
+          <h1 className="text-5xl sm:text-6xl tracking-tight max-w-3xl">Field notes from an analyst who builds.</h1>
           <p className="mt-5 max-w-xl text-[var(--ink-soft)]">Honest writing on business analysis, building AI products, automation, and what actually ships.</p>
         </div>
       </section>

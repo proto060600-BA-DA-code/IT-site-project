@@ -1,4 +1,4 @@
-# Deploying RK AI Labs
+# Deploying Synferrous
 
 Your app has three parts that each need a home:
 
@@ -107,7 +107,7 @@ everything; you don't build any of it by hand.
 3. **Upload a template file** → choose `infra/media-storage.yaml` from this repo → Next.
 4. Stack name: `rk-media`. Leave **BucketName** blank. In **AllowedOrigins**, list every
    site that uploads, comma-separated, no trailing slashes — e.g.
-   `https://rk-labs.vercel.app,http://localhost:3000`. Next → Next.
+   `https://synferrous.com,https://www.synferrous.com,http://localhost:3000`. Next → Next.
 5. Tick **"I acknowledge that AWS CloudFormation might create IAM resources"** → **Submit**.
 6. Wait for `CREATE_COMPLETE` (CloudFront takes 3–5 minutes). Open the **Outputs** tab — keep it open.
 
@@ -142,6 +142,52 @@ are set). Images already uploaded keep working — each one remembers where it l
 ### If an access key ever leaks
 IAM → the uploader user → **Security credentials** → deactivate the old key, create a
 new one, update Render. The key can only touch the media bucket, which limits the damage.
+
+---
+
+## Step 6 — Connect synferrous.com
+
+Do these **in order** — the frontend build writes canonical URLs from the backend's
+`SITE_URL`, so the backend must know the domain before the frontend rebuilds.
+
+### 6a. Point the domain at Vercel
+1. Vercel → your project → **Settings → Domains** → add `synferrous.com`, then add
+   `www.synferrous.com` and choose **Redirect to synferrous.com**.
+2. Vercel shows the DNS records to create. Add exactly those at the registrar where
+   you bought synferrous.com (usually an **A** record for the apex and a **CNAME** for `www`).
+3. Wait until Vercel shows both domains as **Valid Configuration** (minutes to a few hours).
+
+### 6b. Tell the backend
+Render → `ascendai-backend` → **Environment**:
+
+| Key | Value |
+|-----|-------|
+| `SITE_URL` | `https://synferrous.com` |
+| `CORS_ORIGINS` | `https://synferrous.com,https://www.synferrous.com,https://rk-labs.vercel.app` |
+
+Save and let it redeploy. On first boot it also rewrites the old brand name, domain
+and email in your stored content (settings, pages, layouts, posts) — once.
+
+### 6c. Rebuild the frontend
+Vercel → **Deployments** → latest → **Redeploy**. The build log should end with
+`Wrote head metadata for N routes, 404.html and llms.txt`. If it says
+*"refusing to write canonical URLs"*, `SITE_URL` isn't set yet — fix 6b first.
+
+### 6d. Email on the new domain
+The site publishes **hello@synferrous.com** (and the Privacy/Terms pages mention
+`privacy@`, `legal@` and `security@`). Make sure mail to those addresses reaches
+you — set up a mailbox or forwarding at your registrar or a mail provider, ideally
+a catch-all. To send lead alerts *from* the domain, verify `synferrous.com` in Resend
+(it gives you DNS records), then set `SENDER_EMAIL` on Render, e.g. `alerts@synferrous.com`.
+
+### 6e. Image storage (if you've done Step 5)
+CloudFormation → `rk-media` → **Update** → *Use current template* → set
+**AllowedOrigins** to `https://synferrous.com,https://www.synferrous.com,http://localhost:3000`.
+
+### 6f. Search engines
+In Google Search Console add the `synferrous.com` property and submit
+`https://synferrous.com/sitemap.xml`. Optionally, forward `iamrohankapoor.com` to
+`https://synferrous.com` (301) at GoDaddy so old links still land.
 
 ---
 

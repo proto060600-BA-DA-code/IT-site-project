@@ -1,8 +1,10 @@
-# RK AI Labs — project rules
+# Synferrous — project rules
 
-Consulting-studio site: FastAPI + MongoDB backend (`backend/`, Render service
-`ascendai-backend`), React CRA + craco frontend (`frontend/`, Vercel, live at
-`https://rk-labs.vercel.app`). Main repo: `proto060600-BA-DA-code/IT-site-project`.
+**Synferrous** (formerly RK AI Labs, rebranded Oct 2026) — consulting-studio site
+on `https://synferrous.com`. FastAPI + MongoDB backend (`backend/`, Render service
+`ascendai-backend` — infrastructure names predate the brand; don't rename them),
+React CRA + craco frontend (`frontend/`, Vercel; also at `rk-labs.vercel.app`).
+Main repo: `proto060600-BA-DA-code/IT-site-project`.
 
 Run by one person, Rohan Kapoor. Site copy must stay consistent with what he
 can evidence (see `backend/content/about.md`) — no invented stats, team size,

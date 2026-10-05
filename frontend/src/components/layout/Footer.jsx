@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-1 md:grid-cols-12 gap-10">
         <div className="md:col-span-5">
           <div className="flex items-center gap-3 mb-5">
-            <span className="inline-flex items-center justify-center w-10 h-10 bg-[var(--gold)] text-[var(--navy-950)] font-semibold text-sm tracking-tight">RK</span>
+            <span className="inline-flex items-center justify-center w-10 h-10 bg-[var(--gold)] text-[var(--navy-950)] font-semibold text-base tracking-tight" aria-hidden="true">S</span>
             <div>
               <div className="text-lg font-semibold tracking-tight">{s.brand_name}</div>
               <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/70">{s.founded}</div>

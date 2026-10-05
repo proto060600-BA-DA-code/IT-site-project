@@ -41,7 +41,7 @@ export default function AdminDashboard() {
         <div>
           <div className="eyebrow mb-2">Console</div>
           <h1 className="text-3xl tracking-tight">Dashboard</h1>
-          <p className="text-sm text-[var(--ink-soft)] mt-1">Operational snapshot of the RK AI Labs site.</p>
+          <p className="text-sm text-[var(--ink-soft)] mt-1">Operational snapshot of the Synferrous site.</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex border border-[var(--line)] bg-white">

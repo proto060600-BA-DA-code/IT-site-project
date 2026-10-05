@@ -17,16 +17,36 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 CHAT_MODEL = os.environ.get("CHAT_MODEL", "claude-sonnet-4-5-20250929")
 MAX_TOKENS = int(os.environ.get("CHAT_MAX_TOKENS", "1024"))
 
-SYSTEM_PROMPT = """You are Aria, the AI assistant for RK AI Labs — an IT Business Analysis and AI product studio based in Delhi NCR, India.
+def _build_system_prompt() -> str:
+    """Built from the published catalogue, so Aria can never describe services
+    or prices that differ from the Services page. (The previous hardcoded
+    prompt still listed the retired placeholder services.)"""
+    from content.catalogue import SERVICES, PRICING_NOTE
 
-Help visitors:
-- Understand our services: business analysis as a service, requirements & process discovery, AI product MVP builds, LLM/GenAI integration, intelligent workflow automation, and AI readiness assessments & roadmaps.
-- Navigate the website: services page (/services), about (/about), contact (/contact), login (/login).
-- Answer business-analysis and AI-product questions concisely (think senior IT Business Analyst who also ships).
-- Encourage qualified visitors to fill the lead form on /contact or click "Book a Consultation" CTAs.
+    lines = "\n".join(
+        f"- {s['name']} — {s['price_label']} ({s['duration']}): {s['short_description']}"
+        for s in SERVICES
+    )
+    return f"""You are Aria, the website assistant for Synferrous — the business analysis, e-commerce and AI practice of Rohan Kapoor, based in Delhi NCR, India. Synferrous is one person: Rohan scopes and delivers every engagement himself.
 
-Tone: confident, expert, concise (3-5 short sentences max). Never invent prices — always say "Custom Quote — book a consultation."
-"""
+Services and starting prices (these are the only services offered — do not invent others):
+{lines}
+
+{PRICING_NOTE}
+
+Rohan's background (only claim what is listed here): techno-functional business analyst; requirements and order-management work on Salesforce Commerce Cloud programmes for 7+ enterprise clients while at Solveda; designed, built and launched a live e-commerce store with Razorpay payments for a publisher; GA4/GTM tracking and technical SEO; builds AI assistants.
+
+How to help:
+- Answer questions about the services above, quoting the starting price exactly as written.
+- Point people to /services for details, /about for Rohan's background, and /contact to start a conversation.
+- For anything needing a firm quote, timeline or scope, say Rohan replies personally within one business day via the Contact page.
+- Never promise discounts, delivery dates, guarantees or results. Never claim a team, seniority or clients beyond those listed.
+- If you don't know, say so and suggest the Contact page.
+
+Tone: clear, friendly, concise — 2 to 4 short sentences."""
+
+
+SYSTEM_PROMPT = _build_system_prompt()
 
 
 def _build_history(docs):
@@ -65,7 +85,9 @@ async def chat_stream(payload: ChatIn):
 
         # Graceful degradation: no key configured -> friendly notice, site still works.
         if not ANTHROPIC_API_KEY:
-            notice = "Aria isn't configured yet. Add ANTHROPIC_API_KEY to backend/.env (and restart the backend) to enable the live assistant."
+            # Visitor-facing — never expose setup instructions. (The widget hides
+            # itself when chat_enabled is false, so this is only a fallback.)
+            notice = "The assistant is offline right now. Please use the Contact page — Rohan replies personally within one business day."
             yield f"event: delta\ndata: {notice}\n\n"
             yield "event: done\ndata: [DONE]\n\n"
             return

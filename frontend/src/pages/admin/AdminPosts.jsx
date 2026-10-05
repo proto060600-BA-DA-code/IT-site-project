@@ -27,7 +27,7 @@ export default function AdminPosts() {
         { key: "status", label: "Status", type: "select", options: ["draft", "published"] },
       ]}
       defaults={{
-        title: "", slug: "", excerpt: "", cover_image: "", author: "RK AI Labs Team",
+        title: "", slug: "", excerpt: "", cover_image: "", author: "Rohan Kapoor",
         tags: "", read_time_min: 5, meta_description: "", body: "", status: "draft",
       }}
     />

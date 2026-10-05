@@ -1,4 +1,4 @@
-# Running RK AI Labs locally
+# Running Synferrous locally
 
 This gets the full site running on your own machine at **http://localhost:3000**.
 The Aria chat widget is intentionally disabled (it needs an Emergent key); everything

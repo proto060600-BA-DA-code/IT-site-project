@@ -10,7 +10,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
           <div className="eyebrow mb-4">Contact</div>
           <h1 className="text-5xl sm:text-6xl tracking-tight max-w-3xl">Let's build a defensible commerce roadmap.</h1>
-          <p className="mt-5 max-w-xl text-[var(--ink-soft)]">Drop us a note. A senior BA — not an SDR — will reply within one business day.</p>
+          <p className="mt-5 max-w-xl text-[var(--ink-soft)]">Send me a note. I reply personally — no sales team — within one business day.</p>
         </div>
       </section>
       <section className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10">

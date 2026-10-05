@@ -19,7 +19,7 @@ const FALLBACK = {
     "IT Business Analysis solutions and AI product building. From requirements and process discovery to shipped AI products and automations.",
   footer_links_heading: "Quick Links",
   footer_contact_heading: "Contact Info",
-  footer_legal: "© 2026 RK AI Labs · All rights reserved",
+  footer_legal: "© 2026 Synferrous · All rights reserved",
   footer_locale: "Delhi NCR · India",
   brand_name: BRAND.name,
   tagline: BRAND.tagline,
@@ -29,6 +29,9 @@ const FALLBACK = {
   founded: BRAND.founded,
   linkedin: BRAND.linkedin,
   x: BRAND.x,
+  // Off until the backend confirms the assistant is configured — a visitor
+  // should never meet a chat widget that can't answer.
+  chat_enabled: false,
   grievance_officer_name: "",
   grievance_officer_email: "",
   consent_text: "",

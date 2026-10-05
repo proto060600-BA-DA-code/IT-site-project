@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  RK AI Labs media storage. A private, encrypted S3 bucket served only through
+  Synferrous media storage. A private, encrypted S3 bucket served only through
   CloudFront (Origin Access Control), plus a least-privilege IAM user the
   backend uses to sign uploads. Deploy in ap-south-1 (Mumbai).
 
@@ -13,7 +13,7 @@ Parameters:
       generates one (recommended).
   AllowedOrigins:
     Type: CommaDelimitedList
-    Default: "https://rk-labs.vercel.app,http://localhost:3000"
+    Default: "https://synferrous.com,https://www.synferrous.com,https://rk-labs.vercel.app,http://localhost:3000"
     Description: >
       Sites allowed to upload from the browser (no trailing slash). Add your
       custom domain here when you have one.

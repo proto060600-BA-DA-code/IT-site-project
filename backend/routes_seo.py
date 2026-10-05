@@ -36,7 +36,7 @@ async def seo_routes():
     from routes_settings import get_settings
 
     s = await get_settings()
-    brand = s.get("brand_name") or "RK AI Labs"
+    brand = s.get("brand_name") or "Synferrous"
     tagline = s.get("tagline") or ""
     default_desc = _clip(s.get("footer_description") or tagline)
 
@@ -77,7 +77,7 @@ async def seo_routes():
         route("/", f"{brand} — {tagline}" if tagline else brand, default_desc),
         route("/services", "Services", f"Business analysis and AI product services from {brand}.",
               jsonld=[crumbs(("Home", "/"), ("Services", "/services"))]),
-        route("/contact", "Contact", f"Start a conversation with {brand}. A senior analyst replies within one business day.",
+        route("/contact", "Contact", f"Start a conversation with {brand}. Rohan replies personally within one business day.",
               jsonld=[crumbs(("Home", "/"), ("Contact", "/contact"))]),
     ]
 
@@ -158,7 +158,7 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: {SITE_URL}/api/sitemap.xml
+Sitemap: {SITE_URL}/sitemap.xml
 """
 
 

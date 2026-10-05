@@ -63,7 +63,7 @@ function HeroBlock({ props: p, ctx }) {
           </h1>
           <p className="mt-6 text-lg on-dark-soft max-w-xl leading-relaxed">
             {t(p.subtitle, banner.subtitle) ||
-              "From requirements and process discovery to shipped AI products and automations — led by senior analysts who build, not just advise."}
+              "Requirements, e-commerce builds and practical AI — scoped and delivered by the same person, from first conversation to launch."}
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3">
             <Link to={t(p.cta_link, banner.cta_link) || "/contact"} data-testid="hero-primary-cta" className="btn-accent justify-center">
@@ -89,10 +89,10 @@ function HeroBlock({ props: p, ctx }) {
               <div className="hairline my-6" />
               <p className="text-sm on-dark-soft italic flex gap-3">
                 <Quotes size={20} weight="fill" className="text-[var(--gold)] shrink-0" />
-                {t(p.quote, "They framed the problem, then built it. We had a working AI prototype in six weeks.")}
+                {t(p.quote, "The person who scopes your project is the person who delivers it — no hand-offs.")}
               </p>
               <p className="text-xs font-mono uppercase tracking-wider on-dark-muted mt-2">
-                {t(p.quote_author, "— Head of Product, SaaS scale-up")}
+                {t(p.quote_author, "— Rohan Kapoor, Synferrous")}
               </p>
             </div>
           </div>
@@ -103,10 +103,10 @@ function HeroBlock({ props: p, ctx }) {
 }
 
 const DEFAULT_STATS = [
-  { n: "6 wks", label: "From problem statement to working AI MVP" },
-  { n: "2-in-1", label: "Senior business analysis + AI engineering" },
-  { n: "100%", label: "Builds shipped with a baseline & eval" },
-  { n: "48h", label: "Turnaround on a free 1-page diagnostic" },
+  { n: "7+", label: "Enterprise e-commerce clients delivered for (at Solveda)" },
+  { n: "0", label: "Critical post-release defects on enterprise releases" },
+  { n: "Live", label: "E-commerce store launched end to end, with payments" },
+  { n: "1 day", label: "Personal reply to every enquiry" },
 ];
 
 /* ── Trusted by ───────────────────────────────────────────────────────── */
@@ -116,10 +116,10 @@ const TrustedByBlock = ({ props: p }) => (
 
 /* ── Capabilities (what we do) ────────────────────────────────────────── */
 const DEFAULT_CAPS = [
-  { icon: "Compass", title: "Strategy", body: "Frame the real problem before anyone writes code. Discovery, process mapping and a defensible business case." },
-  { icon: "ChartLineUp", title: "Transformation", body: "Turn strategy into a shippable backlog — epics, user stories and the ceremonies that keep delivery honest." },
-  { icon: "Cpu", title: "AI Products", body: "Design and build LLM features and automations that reach production, each with a baseline and an eval." },
-  { icon: "ShieldCheck", title: "Governance", body: "Keep AI accountable — evaluation harnesses, guardrails and the documentation your auditors will ask for." },
+  { icon: "Compass", title: "Requirements", body: "Frame the real problem before anyone writes code — process maps, BRDs and user stories your developers can build from." },
+  { icon: "ChartLineUp", title: "E-commerce", body: "Stores with live payments, and order-management process design from enterprise Salesforce Commerce Cloud programmes." },
+  { icon: "Target", title: "Analytics & SEO", body: "GA4 and Tag Manager tracking you can trust, and technical SEO audits with a prioritised fix plan." },
+  { icon: "Cpu", title: "AI Assistants", body: "Practical AI for your website — answers from your own content, guardrails, and a hand-off to a human." },
 ];
 
 function CapabilitiesBlock({ props: p }) {
@@ -128,7 +128,7 @@ function CapabilitiesBlock({ props: p }) {
     <section className="border-b border-[var(--line)] bg-white" data-testid="what-we-do-section">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-20 lg:py-24">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="eyebrow eyebrow-center mb-4">{t(p.eyebrow, "What we do")}</div>
+          <div className="eyebrow eyebrow-center mb-4">{t(p.eyebrow, "Services")}</div>
           <h2 className="text-4xl sm:text-5xl">{t(p.title, "Analysis that drives meaningful change.")}</h2>
         </div>
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -181,7 +181,7 @@ function CategoryTreeBlock({ props: p, ctx }) {
             <div className="eyebrow mb-4">{t(p.eyebrow, "Practice areas")}</div>
             <h2 className="text-4xl tracking-tight">{t(p.title, "How we engage.")}</h2>
             <p className="text-[var(--ink-soft)] mt-4 max-w-sm">
-              {t(p.body, "Four practice areas. One senior analyst in the room from day one. Compose the engagement around the outcome you need.")}
+              {t(p.body, "Four practice areas, one person accountable for each engagement from the first call to sign-off.")}
             </p>
           </div>
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-px bg-[var(--line)] border border-[var(--line)]" data-testid="category-tree-section">
@@ -211,7 +211,7 @@ function ServicesCarouselBlock({ props: p, ctx }) {
         <div className="flex items-end justify-between mb-10 gap-6 flex-wrap">
           <div>
             <div className="eyebrow mb-3">{t(p.eyebrow, "Featured services")}</div>
-            <h2 className="text-4xl tracking-tight max-w-xl">{t(p.title, "Senior consulting, productized.")}</h2>
+            <h2 className="text-4xl tracking-tight max-w-xl">{t(p.title, "Fixed scope. Published prices.")}</h2>
           </div>
           <Link to="/services" data-testid="view-all-services" className="inline-block py-2.5 text-sm font-mono uppercase tracking-wider text-[var(--brand-ink)] underline-offset-4 hover:underline">
             {t(p.link_label, "View all services →")}
@@ -242,10 +242,10 @@ function ServicesCarouselBlock({ props: p, ctx }) {
 
 /* ── Why us (bento) ───────────────────────────────────────────────────── */
 const DEFAULT_WHY = [
-  { title: "Senior analyst in the room — never juniors" },
-  { title: "We build to learn: real users, real evidence" },
+  { title: "The person who scopes it delivers it — no hand-offs" },
+  { title: "Built to learn: real users, real evidence" },
   { title: "AI where it genuinely helps — not for its own sake" },
-  { title: "Engagement priced to outcomes, not bench hours" },
+  { title: "Fixed-scope pricing, published upfront" },
 ];
 
 function WhyUsBlock({ props: p }) {
@@ -254,10 +254,10 @@ function WhyUsBlock({ props: p }) {
     <section className="border-b border-[var(--line)]">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-20 grid grid-cols-1 md:grid-cols-12 gap-px bg-[var(--line)] border border-[var(--line)]">
         <div className="bg-white md:col-span-7 p-10">
-          <div className="eyebrow mb-3">{t(p.eyebrow, "Why RK AI Labs")}</div>
+          <div className="eyebrow mb-3">{t(p.eyebrow, "Why Synferrous")}</div>
           <h2 className="text-4xl tracking-tight">{t(p.title, "Clarity before code.")}</h2>
           <p className="text-[var(--ink-soft)] mt-4 max-w-lg leading-relaxed">
-            {t(p.body, "A sharp problem statement and honest acceptance criteria de-risk a build more than any framework. We do both halves — senior business analysis and hands-on AI engineering.")}
+            {t(p.body, "A sharp problem statement and honest acceptance criteria de-risk a build more than any framework. I do both halves — the business analysis and the build.")}
           </p>
           <ul className="mt-6 space-y-3">
             {items.map((it, i) => (
@@ -287,7 +287,7 @@ function WhyUsBlock({ props: p }) {
 const DEFAULT_BULLETS = [
   "No-obligation 30-minute call",
   "NDA-friendly, confidential by default",
-  "Senior consultant, no SDRs",
+  "You talk to me directly — no sales team",
 ];
 
 function LeadFormBlock({ props: p }) {
@@ -299,7 +299,7 @@ function LeadFormBlock({ props: p }) {
           <div className="eyebrow mb-3">{t(p.eyebrow, "Start a conversation")}</div>
           <h2 className="text-4xl tracking-tight">{t(p.title, "Bring us your hardest problem.")}</h2>
           <p className="text-[var(--ink-soft)] mt-4 leading-relaxed max-w-md">
-            {t(p.body, "Whether you're scoping requirements, evaluating an AI idea, or want to automate a painful process — a senior analyst will respond within one business day.")}
+            {t(p.body, "Whether you're scoping requirements, evaluating an AI idea, or want to automate a painful process — I\u2019ll reply personally within one business day.")}
           </p>
           <div className="mt-8 space-y-3 text-sm">
             {bullets.map((b, i) => (

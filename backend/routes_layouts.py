@@ -211,7 +211,7 @@ def default_home_blocks() -> List[Block]:
         }),
         Block(type="trusted_by", props={"label": "Trusted by ambitious organizations"}),
         Block(type="capabilities", props={
-            "eyebrow": "What we do",
+            "eyebrow": "Services",
             "title": "Analysis that drives meaningful change.",
             "items": [
                 {"icon": "Compass", "title": "Strategy",
@@ -230,7 +230,7 @@ def default_home_blocks() -> List[Block]:
         Block(type="services_carousel", props={
             "eyebrow": "Featured services", "title": "Where we start.",
         }),
-        Block(type="why_us", props={"eyebrow": "Why RK AI Labs"}),
+        Block(type="why_us", props={"eyebrow": "Why Synferrous"}),
         Block(type="lead_form", props={
             "eyebrow": "Start a conversation",
             "title": "Bring us your hardest problem.",

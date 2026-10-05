@@ -18,8 +18,12 @@ async def list_banners():
 @router.get("/settings")
 async def public_settings():
     """Public read of site-wide copy — header strip, logo, footer, contact."""
+    import os
     from routes_settings import get_settings
-    return await get_settings()
+    s = await get_settings()
+    # Lets the chat widget hide itself instead of showing a dead assistant.
+    s["chat_enabled"] = bool(os.environ.get("ANTHROPIC_API_KEY"))
+    return s
 
 
 @router.get("/layouts/{page}")

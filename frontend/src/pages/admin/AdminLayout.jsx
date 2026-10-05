@@ -197,7 +197,7 @@ export default function AdminLayout() {
         }`}
       >
         <div className="p-5 border-b border-[var(--line)] flex items-center gap-2.5">
-          <span className="inline-flex items-center justify-center w-9 h-9 bg-navy-950 text-[var(--gold)] font-semibold text-[12px] tracking-tight shrink-0">RK</span>
+          <span className="inline-flex items-center justify-center w-9 h-9 bg-navy-950 text-[var(--gold)] font-semibold text-sm tracking-tight shrink-0" aria-hidden="true">S</span>
           <div className="min-w-0 flex-1">
             <div className="text-sm font-semibold tracking-tight">Admin Console</div>
             <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--ink-soft)] truncate">{user.email}</div>

@@ -59,10 +59,10 @@ function Layout({ children }) {
     // Per-page browser tab title. Detail pages (service/post/category) can still
     // override this with a more specific title once their data loads.
     const t = isAdmin
-      ? "Admin · RK AI Labs"
+      ? "Admin · Synferrous"
       : PAGE_TITLES[location.pathname]
-      ? `${PAGE_TITLES[location.pathname]} · RK AI Labs`
-      : "RK AI Labs — AI, Software & Digital Transformation";
+      ? `${PAGE_TITLES[location.pathname]} · Synferrous`
+      : "Synferrous — AI, Software & Digital Transformation";
     document.title = t;
   }, [location.pathname, isAdmin]);
 
@@ -84,7 +84,7 @@ function AppRoutes() {
         <Route path="/services" element={<ServicesPLP />} />
         <Route path="/services/:slug" element={<ServicePDP />} />
         <Route path="/categories/:slug" element={<CategoryPage />} />
-        <Route path="/about" element={<CmsPage slug="about" fallbackTitle="About RK AI Labs" fallbackContent="Loading…" />} />
+        <Route path="/about" element={<CmsPage slug="about" fallbackTitle="About Synferrous" fallbackContent="Loading…" />} />
         <Route path="/privacy" element={<CmsPage slug="privacy" fallbackTitle="Privacy Policy" fallbackContent="Loading…" />} />
         <Route path="/terms" element={<CmsPage slug="terms" fallbackTitle="Terms & Conditions" fallbackContent="Loading…" />} />
         <Route path="/contact" element={<Contact />} />

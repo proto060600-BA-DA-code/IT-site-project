@@ -83,7 +83,7 @@ export default function ServicePDP() {
             <div>
               <div className="eyebrow mb-3">Engage</div>
               <h2 className="text-3xl tracking-tight">Engage on {service.name}</h2>
-              <p className="text-[var(--ink-soft)] mt-3">Fill in the form. A senior BA will respond within one business day with next steps.</p>
+              <p className="text-[var(--ink-soft)] mt-3">Fill in the form. I'll reply personally within one business day with next steps.</p>
             </div>
             <LeadForm source={`pdp:${service.slug}`} serviceInterest={service.name} />
           </div>
@@ -95,7 +95,7 @@ export default function ServicePDP() {
         "@type": "Service",
         "serviceType": service.name,
         "description": service.short_description,
-        "provider": { "@type": "ProfessionalService", "name": "RK AI Labs" },
+        "provider": { "@type": "ProfessionalService", "name": "Synferrous" },
         "offers": { "@type": "Offer", "priceSpecification": { "@type": "PriceSpecification", "price": service.price_label } },
       }) }} />
     </div>

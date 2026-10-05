@@ -1,8 +1,8 @@
 ## Hello — I'm Rohan Kapoor
 
-RK AI Labs is my practice. I'm a **techno-functional business analyst and product owner** for e-commerce and digital teams — and I build, too. I take a problem from "we're not sure what we need" to a clear specification, then see it through delivery, testing and launch.
+Synferrous is my practice. I'm a **techno-functional business analyst and product owner** for e-commerce and digital teams — and I build, too. I take a problem from "we're not sure what we need" to a clear specification, then see it through delivery, testing and launch.
 
-When you work with RK AI Labs, you work with me directly. The person who scopes your project is the person who delivers it — no hand-off to someone you've never met.
+When you work with Synferrous, you work with me directly. The person who scopes your project is the person who delivers it — no hand-off to someone you've never met.
 
 ## What I've delivered
 

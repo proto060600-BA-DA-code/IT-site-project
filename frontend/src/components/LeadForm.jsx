@@ -10,7 +10,7 @@ export default function LeadForm({ source = "lead_capture", serviceInterest = ""
   const s = useSettings();
   const consentText =
     s.consent_text ||
-    "I agree to RK AI Labs using these details to respond to my enquiry, as described in the Privacy Policy.";
+    "I agree to Synferrous using these details to respond to my enquiry, as described in the Privacy Policy.";
 
   const [form, setForm] = useState({
     name: "", email: "", phone: "", company: "", service_interest: serviceInterest, message: "",
@@ -55,7 +55,7 @@ export default function LeadForm({ source = "lead_capture", serviceInterest = ""
       <div data-testid="lead-form-success" className="border border-[var(--brand-teal)] bg-white p-8 text-center">
         <div className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--brand-amber)] mb-2">✓ Received</div>
         <h3 className="text-2xl tracking-tight mb-2">We'll be in touch.</h3>
-        <p className="text-sm text-[var(--ink-soft)]">A senior consultant will reach out within one business day.</p>
+        <p className="text-sm text-[var(--ink-soft)]">I'll reply personally within one business day.</p>
       </div>
     );
   }

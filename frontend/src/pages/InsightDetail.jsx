@@ -44,7 +44,7 @@ export default function InsightDetail() {
         <div className="bg-[var(--paper-surface)] p-7 border border-[var(--line)]">
           <div className="eyebrow mb-2">Next step</div>
           <h3 className="text-2xl tracking-tight">Want our take on your stack?</h3>
-          <p className="text-[var(--ink-soft)] mt-2 mb-5">A senior BA will respond within one business day.</p>
+          <p className="text-[var(--ink-soft)] mt-2 mb-5">I'll reply personally within one business day.</p>
           <Link to="/contact" className="btn-accent">Book a consultation →</Link>
         </div>
       </section>
@@ -58,7 +58,7 @@ export default function InsightDetail() {
         "datePublished": post.published_at,
         "dateModified": post.updated_at,
         "author": { "@type": "Person", "name": post.author },
-        "publisher": { "@type": "Organization", "name": "RK AI Labs" },
+        "publisher": { "@type": "Organization", "name": "Synferrous" },
         "keywords": (post.tags || []).join(", "),
       }) }} />
     </article>

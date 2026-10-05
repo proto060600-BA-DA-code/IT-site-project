@@ -24,8 +24,8 @@ export default function ServicesPLP() {
       <section className="border-b border-[var(--line)] bg-[var(--paper-surface)]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
           <div className="eyebrow mb-4">Services</div>
-          <h1 className="text-5xl sm:text-6xl tracking-tight max-w-3xl">Productized senior consulting.</h1>
-          <p className="mt-5 max-w-xl text-[var(--ink-soft)]">Fixed-scope engagements led by senior Business Analysts. Pick a starting point — or compose your own.</p>
+          <h1 className="text-5xl sm:text-6xl tracking-tight max-w-3xl">Fixed scope. Published prices.</h1>
+          <p className="mt-5 max-w-xl text-[var(--ink-soft)]">Fixed-scope engagements, each scoped and delivered by Rohan Kapoor. Pick a starting point — or compose your own.</p>
         </div>
       </section>
 

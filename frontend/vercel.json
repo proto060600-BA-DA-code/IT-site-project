@@ -3,6 +3,7 @@
   "installCommand": "npm install --legacy-peer-deps",
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "https://ascendai-backend.onrender.com/api/sitemap.xml" },
     { "source": "/services", "destination": "/index" },
     { "source": "/services/:slug", "destination": "/index" },
     { "source": "/categories/:slug", "destination": "/index" },

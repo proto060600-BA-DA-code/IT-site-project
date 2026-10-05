@@ -149,7 +149,7 @@ async function main() {
     return;
   }
 
-  const brand = manifest.brand || "RK AI Labs";
+  const brand = manifest.brand || "Synferrous";
   let written = 0;
   for (const r of manifest.routes || []) {
     const file = outFile(r.path);
@@ -173,7 +173,43 @@ async function main() {
     ))
   );
 
-  console.log(`[prerender-meta] Wrote head metadata for ${written} routes + 404.html.`);
+  // llms.txt (llmstxt.org) generated from the same live data, so AI crawlers
+  // see the current services and prices — the static file drifted once.
+  fs.writeFileSync(path.join(BUILD, "llms.txt"), llmsTxt(manifest, brand, site));
+
+  console.log(`[prerender-meta] Wrote head metadata for ${written} routes, 404.html and llms.txt.`);
+}
+
+function llmsTxt(manifest, brand, site) {
+  const strip = (t) => String(t || "").replace(new RegExp(`\\s*·\\s*${brand}$`), "");
+  const routes = manifest.routes || [];
+  const home = routes.find((r) => r.path === "/");
+  const line = (r) => `- [${strip(r.title)}](${r.canonical}): ${r.description}`;
+  const services = routes.filter((r) => r.path.startsWith("/services/"));
+  const posts = routes.filter((r) => r.path.startsWith("/insights/"));
+  const pages = routes.filter((r) =>
+    ["/services", "/about", "/contact", "/insights"].includes(r.path));
+  const legal = routes.filter((r) => ["/privacy", "/terms"].includes(r.path));
+
+  return [
+    `# ${brand}`,
+    "",
+    `> ${home ? home.description : ""}`,
+    "",
+    `${brand} is run by Rohan Kapoor, a techno-functional business analyst in Delhi NCR, India. ` +
+      "Every engagement is scoped and delivered by him personally. Prices are starting points and exclude GST where applicable.",
+    "",
+    "## Services",
+    ...services.map(line),
+    "",
+    "## Pages",
+    ...pages.map(line),
+    ...(posts.length ? ["", "## Insights", ...posts.map(line)] : []),
+    ...(legal.length ? ["", "## Optional", ...legal.map(line)] : []),
+    "",
+    `Sitemap: ${site.replace(/\/$/, "")}/sitemap.xml`,
+    "",
+  ].join("\n");
 }
 
 main().catch((e) => {

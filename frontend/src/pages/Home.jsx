@@ -55,12 +55,12 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          "name": "RK AI Labs",
+          "name": "Synferrous",
           "description": "IT Business Analysis solutions and AI product building",
           "areaServed": "Worldwide",
           "address": { "@type": "PostalAddress", "addressLocality": "Delhi NCR", "addressCountry": "IN" },
           "telephone": "+91-98735-56197",
-          "email": "hello@iamrohankapoor.com",
+          "email": "hello@synferrous.com",
         }) }}
       />
     </div>

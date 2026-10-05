@@ -1,5 +1,6 @@
-# RK AI Labs — robots.txt
-# NOTE: update the domain below to your live domain before deploying.
+# Synferrous — robots.txt
+# The sitemap is generated live from the CMS by the backend; Vercel proxies
+# /sitemap.xml to it (see vercel.json).
 
 User-agent: *
 Allow: /
@@ -28,4 +29,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://iamrohankapoor.com/api/sitemap.xml
+Sitemap: https://synferrous.com/sitemap.xml

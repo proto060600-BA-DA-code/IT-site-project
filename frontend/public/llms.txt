@@ -1,26 +1,28 @@
-# RK AI Labs
+# Synferrous
 
-> RK AI Labs is an IT Business Analysis and AI product studio based in Delhi NCR, India. We pair senior business analysis with hands-on AI product engineering — taking organisations from ambiguous problems and fuzzy requirements all the way to shipped AI products and automations.
+> Business analysis, e-commerce builds and practical AI assistants, delivered by Rohan Kapoor in Delhi NCR, India.
 
-We do both halves most firms split: senior business analysis *and* AI product engineering, under one roof. Clarity before code; build to learn; AI accelerates, judgment decides.
+Synferrous is run by Rohan Kapoor, a techno-functional business analyst. Every engagement is scoped and delivered by him personally. Prices are starting points and exclude GST where applicable.
 
 ## Services
+- [Requirements & Process Discovery](https://synferrous.com/services/requirements-process-discovery): Turn an idea or a messy process into a build-ready specification your developers or agency can quote against. From ₹45,000.
+- [Fractional BA / Product Owner](https://synferrous.com/services/fractional-ba-product-owner): Part-time product ownership for a build in progress — backlog, specs, agency management and sign-off. ₹40,000 / month (20 hours).
+- [UAT & Release Readiness](https://synferrous.com/services/uat-release-readiness): Structured user-acceptance testing before you go live, so defects are caught by you, not your customers. From ₹30,000 per release.
+- [E-commerce Store Build & Launch](https://synferrous.com/services/ecommerce-store-build): A custom online store with live Razorpay payments and an admin your team can run without a developer. From ₹1,50,000.
+- [Order Management & SFCC Process Consulting](https://synferrous.com/services/order-management-consulting): Process design and specification for order management flows — B2B, Back-to-Back, stock & sell and exceptions. ₹15,000 / day (2-day minimum).
+- [Store Care Retainer](https://synferrous.com/services/store-care-retainer): Monitoring, small fixes and content changes for a live store, so it stays healthy after launch. ₹8,000 / month.
+- [GA4 & Tag Manager Tracking Setup](https://synferrous.com/services/ga4-gtm-tracking-setup): E-commerce tracking you can trust — events, conversions and funnels that show where customers drop off. From ₹20,000.
+- [Technical SEO Audit & Fix Plan](https://synferrous.com/services/technical-seo-audit): Find out why your pages aren't ranking or indexing — with a prioritised, developer-ready fix list. From ₹18,000.
+- [AI Support Assistant for Your Website](https://synferrous.com/services/ai-support-assistant): A chat assistant that answers product, order and FAQ questions from your own content — and hands off to a human. From ₹60,000.
 
-- [Business Analysis as a Service](https://iamrohankapoor.com/services/business-analysis-as-a-service): An on-demand senior IT Business Analyst embedded with your product & engineering teams — epics, user stories, backlog ownership, discovery workshops.
-- [Requirements & Process Discovery](https://iamrohankapoor.com/services/requirements-process-discovery): Turn a fuzzy idea or broken process into a clear, build-ready specification with as-is/to-be process maps, BRD/FRD, success metrics and acceptance criteria.
-- [AI Product MVP Build](https://iamrohankapoor.com/services/ai-product-mvp-build): Go from problem statement to a working AI prototype real users can try — in six weeks, with a baseline, evaluation, guardrails and a user pilot.
-- [LLM & GenAI Integration](https://iamrohankapoor.com/services/llm-genai-integration): Add LLM-powered features — copilots, retrieval-augmented chat, document understanding, agents — to your existing product, with evaluation and safe, flagged rollout.
-- [Intelligent Workflow Automation](https://iamrohankapoor.com/services/intelligent-workflow-automation): Automate repetitive operational and back-office workflows with AI in the loop, combining rules, APIs and human-in-the-loop checkpoints.
-- [AI Readiness Assessment & Roadmap](https://iamrohankapoor.com/services/ai-readiness-assessment-roadmap): A focused audit of your data, processes and opportunities, delivering a prioritised, ROI-ranked AI roadmap.
+## Pages
+- [Services](https://synferrous.com/services): All services with starting prices.
+- [About](https://synferrous.com/about): Rohan Kapoor's background — enterprise e-commerce, order management and launches.
+- [Contact](https://synferrous.com/contact): Start a conversation; Rohan replies personally within one business day.
+- [Insights](https://synferrous.com/insights): Writing on business analysis and applied AI.
 
-## Key pages
+## Optional
+- [Privacy Policy](https://synferrous.com/privacy)
+- [Terms](https://synferrous.com/terms)
 
-- [Services overview](https://iamrohankapoor.com/services): All service offerings with categories and pricing guidance.
-- [Insights / blog](https://iamrohankapoor.com/insights): Articles on business analysis for AI projects, shipping AI MVPs, and the fractional-BA model.
-- [About](https://iamrohankapoor.com/about): Who we are and how we work.
-- [Contact](https://iamrohankapoor.com/contact): Book a consultation or send a project inquiry.
-
-## Notes
-
-- Pricing is engagement-specific. For anything beyond the indicative ranges shown, the correct answer is "Custom Quote — book a consultation."
-- Location: Delhi NCR, India. Contact: hello@iamrohankapoor.com.
+Sitemap: https://synferrous.com/sitemap.xml

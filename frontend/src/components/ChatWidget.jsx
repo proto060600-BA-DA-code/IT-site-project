@@ -2,11 +2,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { ChatTeardropDots, PaperPlaneRight, X, Sparkle, ArrowCounterClockwise } from "@phosphor-icons/react";
 import { STREAM_URL } from "@/lib/api";
 import ReactMarkdownLite from "@/components/ReactMarkdownLite";
+import { useSettings } from "@/contexts/SettingsContext";
 
 const GREETING = {
   role: "assistant",
   content:
-    "Hi, I'm Aria — the RK AI Labs assistant. Ask me about business analysis, building an AI product, automating a process, or just tell me what you're trying to solve.",
+    "Hi, I'm Aria — the Synferrous assistant. Ask me about business analysis, building an AI product, automating a process, or just tell me what you're trying to solve.",
 };
 
 // Shown until the visitor sends their first message, so a new panel isn't
@@ -24,7 +25,17 @@ const storage = {
   del: (k) => { try { localStorage.removeItem(k); } catch { /* private mode */ } },
 };
 
+/**
+ * Only mounts when the backend reports the assistant is configured. A wrapper
+ * rather than an early return inside the widget, because hooks can't be
+ * called conditionally.
+ */
 export default function ChatWidget() {
+  const { chat_enabled } = useSettings();
+  return chat_enabled ? <ChatWidgetInner /> : null;
+}
+
+function ChatWidgetInner() {
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState(() => storage.get(SESSION_KEY));
   const [messages, setMessages] = useState([GREETING]);
@@ -190,7 +201,7 @@ export default function ChatWidget() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold">Aria</div>
-              <div className="text-[10px] font-mono uppercase tracking-wider on-dark-muted truncate">RK AI Labs assistant</div>
+              <div className="text-[10px] font-mono uppercase tracking-wider on-dark-muted truncate">Synferrous assistant</div>
             </div>
             {messages.length > 1 && (
               <button onClick={reset} disabled={busy} title="Start a new conversation" aria-label="Start a new conversation"
