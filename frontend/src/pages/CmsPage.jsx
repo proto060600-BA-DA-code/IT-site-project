@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import ReactMarkdownLite from "@/components/ReactMarkdownLite";
 import { useSettings } from "@/contexts/SettingsContext";
+import usePageTitle from "@/lib/usePageTitle";
 
 export default function CmsPage({ slug, fallbackTitle, fallbackContent }) {
   const [page, setPage] = useState(null);
+  usePageTitle(page?.title || fallbackTitle);
   const s = useSettings();
 
   useEffect(() => {

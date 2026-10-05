@@ -3,10 +3,12 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Package, Clock } from "@phosphor-icons/react";
 import LeadForm from "@/components/LeadForm";
 import { useApiResource } from "@/hooks/useApiResource";
+import usePageTitle from "@/lib/usePageTitle";
 
 export default function ServicePDP() {
   const { slug } = useParams();
   const { data: service, error } = useApiResource(`/services/${slug}`);
+  usePageTitle(error ? "Service not found" : service?.name);
 
   if (error) return <div className="max-w-3xl mx-auto p-12 text-center text-[var(--ink-soft)]">Service not found. <Link to="/services" className="underline">Back to services</Link></div>;
   if (!service) return <div className="max-w-3xl mx-auto p-12 text-center text-[var(--ink-soft)]">Loading…</div>;

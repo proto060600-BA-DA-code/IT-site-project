@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/contexts/AuthContext";
-import { SettingsProvider } from "@/contexts/SettingsContext";
+import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ChatWidget";
@@ -37,34 +37,35 @@ import AdminPosts from "@/pages/admin/AdminPosts";
 import AdminLeads from "@/pages/admin/AdminLeads";
 import { useEffect } from "react";
 
+// Static pages only. Detail pages (service, category, post, CMS page) set
+// their own title via usePageTitle once their data loads.
 const PAGE_TITLES = {
-  "/": "AI, Software & Digital Transformation",
   "/services": "Services",
-  "/about": "About",
   "/contact": "Contact",
   "/insights": "Insights",
-  "/privacy": "Privacy Policy",
-  "/terms": "Terms & Conditions",
   "/login": "Sign in",
   "/register": "Create account",
 };
 
 function Layout({ children }) {
   const location = useLocation();
+  const { brand_name, tagline } = useSettings();
   const isAdmin = location.pathname.startsWith("/admin");
   const isAuth = location.pathname === "/login" || location.pathname === "/register";
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    // Per-page browser tab title. Detail pages (service/post/category) can still
-    // override this with a more specific title once their data loads.
-    const t = isAdmin
-      ? "Admin · Synferrous"
-      : PAGE_TITLES[location.pathname]
-      ? `${PAGE_TITLES[location.pathname]} · Synferrous`
-      : "Synferrous — AI, Software & Digital Transformation";
-    document.title = t;
-  }, [location.pathname, isAdmin]);
+  }, [location.pathname]);
+
+  // Same formats as the server-side head in routes_seo.py, from Site settings,
+  // so the title never changes between the HTML and the rendered page.
+  useEffect(() => {
+    const path = location.pathname;
+    if (isAdmin) document.title = `Admin · ${brand_name}`;
+    else if (path === "/") document.title = tagline ? `${brand_name} — ${tagline}` : brand_name;
+    else if (PAGE_TITLES[path]) document.title = `${PAGE_TITLES[path]} · ${brand_name}`;
+    // Anything else is a detail page, which sets its own title.
+  }, [location.pathname, isAdmin, brand_name, tagline]);
 
   return (
     <div className="App min-h-screen flex flex-col">

@@ -13,8 +13,13 @@
         <meta property="og:title" content="Synferrous — Business Analysis, E-commerce & AI" />
         <meta property="og:description" content="Business analysis, e-commerce builds and practical AI — scoped and delivered by Rohan Kapoor. Fixed-scope services with published prices." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://synferrous.com/" />
-        <link rel="canonical" href="https://synferrous.com/" />
+        <!--
+        Deliberately no canonical link tag or og:url here. This file is the
+        shell for EVERY page, so a canonical in it would tell Google every page
+        is a duplicate of the homepage (this shipped once). prerender-meta.js
+        writes the correct per-page canonical; if that step is skipped, having
+        none is safe and having the wrong one is not.
+        -->
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <!-- Typography uses the native system font (San Francisco on Apple
              devices). No webfonts to download. -->

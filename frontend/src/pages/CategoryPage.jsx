@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
+import usePageTitle from "@/lib/usePageTitle";
 import { ArrowUpRight, ArrowLeft } from "@phosphor-icons/react";
 
 export default function CategoryPage() {
   const { slug } = useParams();
   const [category, setCategory] = useState(null);
+  usePageTitle(category?.name);
   const [services, setServices] = useState([]);
 
   useEffect(() => {

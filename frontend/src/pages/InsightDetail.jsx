@@ -2,10 +2,12 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock } from "@phosphor-icons/react";
 import ReactMarkdownLite from "@/components/ReactMarkdownLite";
 import { useApiResource } from "@/hooks/useApiResource";
+import usePageTitle from "@/lib/usePageTitle";
 
 export default function InsightDetail() {
   const { slug } = useParams();
   const { data: post, error } = useApiResource(`/insights/${slug}`);
+  usePageTitle(error ? "Post not found" : post?.title);
 
   if (error) return <div className="max-w-3xl mx-auto p-12 text-center text-[var(--ink-soft)]">Post not found. <Link to="/insights" className="underline">Back to insights</Link></div>;
   if (!post) return <div className="max-w-3xl mx-auto p-12 text-center text-[var(--ink-soft)]">Loading…</div>;

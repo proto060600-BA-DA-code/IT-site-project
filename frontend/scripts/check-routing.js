@@ -54,6 +54,18 @@ for (const r of routes) {
   }
 }
 
+// index.html is the shell for every page. A canonical in it tells Google every
+// page is a duplicate of one URL — this shipped once. Per-page canonicals are
+// written by prerender-meta.js instead.
+const shell = fs.readFileSync(path.join(root, "public", "index.html"), "utf8")
+  .replace(/<!--[\s\S]*?-->/g, "");
+if (/<link[^>]+rel=["']canonical["']/i.test(shell) || /property=["']og:url["']/i.test(shell)) {
+  errors.push(
+    "public/index.html contains a canonical link or og:url. It's the shell for every page, " +
+    "so every page would claim the same URL. Remove it — prerender-meta.js writes per-page ones."
+  );
+}
+
 if (errors.length) {
   console.error("\n✖ Routing check failed:\n");
   errors.forEach((e) => console.error("  • " + e));
