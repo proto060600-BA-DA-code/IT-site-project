@@ -1,8 +1,12 @@
 # RK AI Labs — project rules
 
 Consulting-studio site: FastAPI + MongoDB backend (`backend/`, Render service
-`ascendai-backend`), React CRA + craco frontend (`frontend/`, Vercel). Main repo:
-`proto060600-BA-DA-code/IT-site-project`.
+`ascendai-backend`), React CRA + craco frontend (`frontend/`, Vercel, live at
+`https://rk-labs.vercel.app`). Main repo: `proto060600-BA-DA-code/IT-site-project`.
+
+Run by one person, Rohan Kapoor. Site copy must stay consistent with what he
+can evidence (see `backend/content/about.md`) — no invented stats, team size,
+seniority or testimonials.
 
 ## What this product is — and isn't
 

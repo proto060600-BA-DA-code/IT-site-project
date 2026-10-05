@@ -1,8 +1,35 @@
 """Seed default admin user + sample CMS data (idempotent)."""
 import os
+from pathlib import Path
 from db import db
 from models import User, Banner, Category, Service, Page, now_iso
 from auth import hash_password
+
+
+# About page copy lives in content/about.md so it can be reviewed and edited
+# as plain text rather than inside a Python string.
+ABOUT_PAGE = {
+    "title": "About Rohan Kapoor",
+    "meta_description": (
+        "Rohan Kapoor, techno-functional business analyst: Salesforce Commerce Cloud "
+        "and order management for enterprise brands, and end-to-end e-commerce launches."
+    ),
+    "content": (Path(__file__).parent / "content" / "about.md").read_text(encoding="utf-8"),
+}
+
+# The original seeded About page carried visible "[PLACEHOLDER …]" notes.
+PLACEHOLDER_MARKER = "[PLACEHOLDER — replace with your real story"
+
+
+async def upgrade_placeholder_about():
+    """Swap in the real About page — but only if the page is still the
+    untouched placeholder. Anything edited in the admin is never overwritten."""
+    doc = await db.pages.find_one({"slug": "about"}, {"_id": 0, "content": 1})
+    if doc and PLACEHOLDER_MARKER in (doc.get("content") or ""):
+        await db.pages.update_one(
+            {"slug": "about"},
+            {"$set": {**ABOUT_PAGE, "updated_at": now_iso()}},
+        )
 
 
 async def seed_admin():
@@ -219,27 +246,7 @@ Treating the fractional BA as a part-time project manager. They are not. They ar
 
     # PAGES (about / privacy / terms)
     pages_seed = [
-        {"slug": "about",
-         "title": "About RK AI Labs",
-         "meta_description": "RK AI Labs — IT Business Analysis solutions and AI product building, based in Delhi NCR, India.",
-         "content": """> **[PLACEHOLDER — replace with your real story, founder bio and milestones.]**
-
-## Who we are
-
-RK AI Labs is an **IT Business Analysis and AI product studio** based in Delhi NCR, India. We help organisations turn ambiguous problems into clear specifications — and then build the AI-powered products and automations that solve them.
-
-Most consultancies stop at advice. Most dev shops start coding before the problem is understood. We do both halves: senior business analysis *and* hands-on AI product engineering, under one roof.
-
-## What we believe
-1. **Clarity before code.** A sharp problem statement and honest acceptance criteria de-risk a build more than any framework.
-2. **Build to learn.** Ship a small, real thing in front of real users, then decide with evidence — not opinions.
-3. **AI accelerates, judgment decides.** AI multiplies a good team; it does not replace human accountability for the trade-offs.
-
-## What we do
-We pair senior Business Analysts with AI engineers to deliver requirements & process discovery, AI product MVP builds, LLM/GenAI integration, intelligent workflow automation, and AI readiness roadmaps.
-
-> **[PLACEHOLDER — add founder name(s), background, team and any track record / case studies here.]**
-"""},
+        {"slug": "about", **ABOUT_PAGE},
         {"slug": "privacy",
          "title": "Privacy Policy",
          "meta_description": "How RK AI Labs handles your data.",
@@ -330,5 +337,6 @@ async def run_all():
     await seed_admin()
     await attach_legacy_admins()
     await seed_content()
+    await upgrade_placeholder_about()
     await seed_layouts()
     await seed_settings()

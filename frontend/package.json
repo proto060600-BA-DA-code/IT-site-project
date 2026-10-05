@@ -68,6 +68,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "prebuild": "node scripts/check-routing.js",
     "build": "craco build",
     "postbuild": "node scripts/prerender-meta.js",
     "test": "craco test"
