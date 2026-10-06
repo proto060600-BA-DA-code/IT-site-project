@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from db import db
-from models import RegisterIn, LoginIn, AuthOut, User, UserPublic, now_iso
+from models import LoginIn, AuthOut, User, UserPublic, now_iso
 from auth import hash_password, verify_password, create_token, get_current_user
 from ratelimit import limit_by_ip, hit
 
@@ -12,24 +12,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 _DUMMY_HASH = hash_password("timing-equaliser-not-a-real-password")
 
 
-@router.post("/register", response_model=AuthOut,
-             dependencies=[Depends(limit_by_ip("register", 5, 3600))])
-async def register(payload: RegisterIn):
-    if len(payload.password) < 8:
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
-    existing = await db.users.find_one({"email": payload.email.lower()})
-    if existing:
-        raise HTTPException(status_code=409, detail="Email already registered")
-    user = User(
-        email=payload.email.lower(),
-        name=payload.name,
-        password_hash=hash_password(payload.password),
-        role="user",
-        last_login=now_iso(),
-    )
-    await db.users.insert_one(user.model_dump())
-    token = create_token(user.id, user.role)
-    return AuthOut(token=token, user=UserPublic(**user.model_dump()))
+# There is deliberately no public sign-up: visitors have no use for an account,
+# and every account is personal data to protect. Admins create users in
+# Admin → Users (routes_rbac.create_user), which also assigns a role.
 
 
 @router.post("/login", response_model=AuthOut,

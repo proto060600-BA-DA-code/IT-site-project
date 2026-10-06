@@ -49,7 +49,7 @@ export default function Login() {
             {busy ? "Signing in…" : "Sign in →"}
           </button>
           <div className="text-sm text-[var(--ink-soft)] text-center">
-            New here? <Link to="/register" data-testid="link-to-register" className="text-[var(--brand-teal)] underline-offset-4 underline">Create an account</Link>
+            Looking to work with us? <Link to="/contact" className="text-[var(--brand-teal)] underline-offset-4 underline">Get in touch</Link>
           </div>
         </form>
       </div>

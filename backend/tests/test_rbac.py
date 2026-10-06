@@ -104,10 +104,14 @@ def test_editor_manages_content_but_not_users_roles_or_audit(client, editor):
 
 
 def test_user_with_no_role_is_kept_out_of_admin(client):
-    r = client.post("/api/auth/register", json={
-        "email": "public@example.com", "name": "Public", "password": "password-123",
-    })
-    headers = {"Authorization": f"Bearer {r.json()['token']}"}
+    # e.g. an account left over from when the site had public sign-up
+    import asyncio
+    import db as dbm
+    from auth import create_token
+    from models import User
+    u = User(email="public@example.com", name="Public", password_hash="x", role="user")
+    asyncio.run(dbm.db.users.insert_one(u.model_dump()))
+    headers = {"Authorization": f"Bearer {create_token(u.id, u.role)}"}
     assert client.get("/api/admin/services", headers=headers).status_code == 403
     # Unknown admin paths are denied too, not waved through.
     assert client.get("/api/admin/does-not-exist", headers=headers).status_code in (403, 404)

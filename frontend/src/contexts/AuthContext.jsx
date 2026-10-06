@@ -34,20 +34,13 @@ export function AuthProvider({ children }) {
     return r.data.user;
   };
 
-  const register = async (name, email, password) => {
-    const r = await api.post("/auth/register", { name, email, password });
-    localStorage.setItem("ciq_token", r.data.token);
-    dispatch({ type: "SET_USER", user: r.data.user });
-    return r.data.user;
-  };
-
   const logout = () => {
     localStorage.removeItem("ciq_token");
     dispatch({ type: "CLEAR" });
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+    <AuthContext.Provider value={{ ...state, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

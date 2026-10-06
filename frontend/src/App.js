@@ -15,7 +15,6 @@ import CategoryPage from "@/pages/CategoryPage";
 import CmsPage from "@/pages/CmsPage";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import InsightsList from "@/pages/InsightsList";
 import InsightDetail from "@/pages/InsightDetail";
 import NotFound from "@/pages/NotFound";
@@ -44,14 +43,13 @@ const PAGE_TITLES = {
   "/contact": "Contact",
   "/insights": "Insights",
   "/login": "Sign in",
-  "/register": "Create account",
 };
 
 function Layout({ children }) {
   const location = useLocation();
   const { brand_name, tagline } = useSettings();
   const isAdmin = location.pathname.startsWith("/admin");
-  const isAuth = location.pathname === "/login" || location.pathname === "/register";
+  const isAuth = location.pathname === "/login";
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -93,7 +91,6 @@ function AppRoutes() {
         <Route path="/insights" element={<InsightsList />} />
         <Route path="/insights/:slug" element={<InsightDetail />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />

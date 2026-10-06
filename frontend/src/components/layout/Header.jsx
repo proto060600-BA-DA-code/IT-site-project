@@ -133,11 +133,7 @@ export default function Header() {
                   Logout
                 </button>
               </div>
-            ) : (
-              <Link to="/login" data-testid="nav-login" className="hidden md:inline-block text-sm font-medium text-[var(--slate-200)] hover:text-[var(--gold)]">
-                Sign in
-              </Link>
-            )}
+            ) : null}
             <Link to={s.header_cta_link || "/contact"} data-testid="header-cta" className="hidden md:inline-flex btn-accent !py-2 !px-4 text-sm whitespace-nowrap">
               {s.header_cta_label}
             </Link>
@@ -181,9 +177,7 @@ export default function Header() {
                     {canAdmin && <Link to="/admin" className="block py-2.5 text-base text-[var(--gold)]">Admin</Link>}
                     <button onClick={logout} className="block w-full text-left py-2.5 text-base text-[var(--slate-200)]">Log out</button>
                   </>
-                ) : (
-                  <Link to="/login" className="block py-2.5 text-base text-[var(--slate-200)]">Sign in</Link>
-                )}
+                ) : null}
               </div>
 
               <Link to={s.header_cta_link || "/contact"} className="btn-accent w-full justify-center mt-5">

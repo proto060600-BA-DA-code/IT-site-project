@@ -15,8 +15,9 @@ seniority or testimonials.
 - A lead-generation site with a CMS. Engagements are sold through conversation →
   proposal → invoice, **not** a cart.
 - Deliberately **not built**: cart, checkout, payments, coupons, bundles, stock /
-  capacity / licence pools, ERP sync, shipping. Don't add them without a change in
-  how the business sells.
+  capacity / licence pools, ERP sync, shipping, public sign-up / visitor accounts
+  (removed Oct 2026 — admins create users in Admin → Users). Don't add them
+  without a change in how the business sells.
 
 ## Architecture decisions
 

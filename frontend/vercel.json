@@ -15,7 +15,6 @@
     { "source": "/disclaimer", "destination": "/index" },
     { "source": "/contact", "destination": "/index" },
     { "source": "/login", "destination": "/index" },
-    { "source": "/register", "destination": "/index" },
     { "source": "/admin", "destination": "/index" },
     { "source": "/admin/:path*", "destination": "/index" }
   ],

@@ -15,7 +15,7 @@ api.interceptors.request.use((config) => {
 
 // Gracefully handle an expired / invalid session instead of surfacing a raw
 // 401/403 (which the React dev overlay shows as an "uncaught runtime error").
-// Auth attempts (login/register) and the silent /auth/me probe are excluded so
+// Sign-in attempts and the silent /auth/me probe are excluded so
 // their own callers can handle the response.
 api.interceptors.response.use(
   (response) => response,
@@ -24,7 +24,6 @@ api.interceptors.response.use(
     const url = error?.config?.url || "";
     const isAuthFlow =
       url.includes("/auth/login") ||
-      url.includes("/auth/register") ||
       url.includes("/auth/me");
 
     if ((status === 401 || status === 403) && !isAuthFlow) {

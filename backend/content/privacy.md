@@ -15,7 +15,6 @@ We only collect what you choose to give us, plus the minimum a website needs to 
 - **Spam check.** When you submit the form we work out a spam score from the form itself (for example, how quickly it was filled in). We store the score and the reasons with your enquiry. **Purpose:** to keep automated junk out without silently discarding real messages.
 - **Emails you send us.** Your email address and whatever you write. **Purpose:** to reply, and to run any engagement that follows.
 - **Chat assistant (when it is switched on).** Your messages and the assistant's replies, stored against a random session ID kept in your browser. **Purpose:** to answer your questions and keep the conversation going if you return.
-- **Accounts.** If you have an account on the Site, your name, email address and password. The password is stored only as a one-way hash, never in readable form. **Purpose:** to let you sign in.
 - **Technical data.** Your IP address is used briefly to limit repeated form submissions and to protect the Site from abuse. It is not stored with your enquiry. Our hosting providers keep standard server logs for security.
 
 We do **not** use advertising, tracking or analytics cookies, and we do not build profiles of visitors. We do not sell your personal data or use it to make automated decisions about you.
@@ -66,11 +65,11 @@ The Site is meant for businesses and adults. We do not knowingly collect persona
 
 ## 8. Security
 
-The Site is served only over HTTPS. Access to enquiries is limited to authorised accounts with role-based permissions, and every change in our admin system is logged. Passwords are hashed. If a personal data breach occurs, we will inform the people affected and the Data Protection Board as the law requires.
+The Site is served only over HTTPS. Access to enquiries is limited to authorised administrator accounts with role-based permissions, their passwords are stored only as one-way hashes, and every change in our admin system is logged. If a personal data breach occurs, we will inform the people affected and the Data Protection Board as the law requires.
 
 ## 9. Your browser storage
 
-The Site does not set cookies for visitors. If you use the chat assistant, a random session ID is saved in your browser's local storage so the conversation can continue. If you sign in, a login token is stored the same way. You can clear both at any time from your browser settings.
+The Site does not set cookies, and visitors don't need an account. If you use the chat assistant, a random session ID is saved in your browser's local storage so the conversation can continue. You can clear it at any time from your browser settings. (Site administrators who sign in also keep a login token there.)
 
 ## 10. Language
 

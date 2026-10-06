@@ -28,8 +28,14 @@ def test_unknown_and_wrong_password_give_the_same_error(client):
     assert a.json() == b.json()
 
 
-def test_short_passwords_are_rejected_at_registration(client):
-    r = client.post("/api/auth/register", json={"email": "s@example.com", "name": "S", "password": "short"})
+def test_there_is_no_public_sign_up(client):
+    r = client.post("/api/auth/register", json={"email": "s@example.com", "name": "S", "password": "password-123"})
+    assert r.status_code in (404, 405)
+
+
+def test_short_passwords_are_rejected_when_admins_create_users(client, admin):
+    r = client.post("/api/admin/users", headers=admin,
+                    json={"email": "s@example.com", "name": "S", "password": "short"})
     assert r.status_code == 400
 
 
