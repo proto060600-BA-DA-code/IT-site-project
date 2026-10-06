@@ -76,3 +76,59 @@ async def send_lead_notification(lead: dict) -> bool:
     except Exception as exc:
         logger.exception("Failed to send lead notification: %s", exc)
         return False
+
+
+# ── Diagnostics (Admin → Site settings) ─────────────────────────────────────
+def status() -> dict:
+    """What's configured, without ever revealing a secret's value."""
+    sender = SENDER_EMAIL or ""
+    using_test_sender = sender.endswith("@resend.dev")
+    problems = []
+    if not RESEND_API_KEY:
+        problems.append("RESEND_API_KEY is not set on Render, so no lead alerts are sent.")
+    if not LEAD_NOTIFICATION_EMAIL:
+        problems.append("LEAD_NOTIFICATION_EMAIL is not set on Render — there's nowhere to send alerts.")
+    if using_test_sender:
+        problems.append(
+            "Sending from Resend's test address (onboarding@resend.dev): Resend only delivers it to the "
+            "email your Resend account is registered with. Make sure that matches LEAD_NOTIFICATION_EMAIL, "
+            "or verify synferrous.com in Resend."
+        )
+    return {
+        "resend_key_set": bool(RESEND_API_KEY),
+        "recipient": LEAD_NOTIFICATION_EMAIL or None,
+        "sender": sender,
+        "using_test_sender": using_test_sender,
+        "ready": bool(RESEND_API_KEY and LEAD_NOTIFICATION_EMAIL),
+        "notes": problems,
+    }
+
+
+async def send_test_email() -> tuple[bool, str]:
+    """Send a real test alert and report exactly what Resend said."""
+    s = status()
+    if not s["ready"]:
+        return False, " ".join(n for n in s["notes"] if "not set" in n)
+    params = {
+        "from": SENDER_EMAIL,
+        "to": [LEAD_NOTIFICATION_EMAIL],
+        "subject": "Synferrous — test lead alert",
+        "html": "<p>This is a test from Admin → Site settings. If you can read this, "
+                "lead alerts are working.</p>",
+    }
+    try:
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        return True, (f"Sent to {LEAD_NOTIFICATION_EMAIL} (Resend id {result.get('id')}). "
+                      "If it isn't in your inbox within a minute, check Spam and Promotions.")
+    except Exception as exc:  # noqa: BLE001 — surface Resend's own message
+        msg = str(exc) or exc.__class__.__name__
+        hint = ""
+        low = msg.lower()
+        if "own email" in low or "testing emails" in low:
+            hint = (" → Resend's test sender can only email your Resend account's address. Either sign up "
+                    "to Resend with the address in LEAD_NOTIFICATION_EMAIL, or verify synferrous.com in Resend.")
+        elif "not verified" in low or "domain" in low:
+            hint = " → Verify synferrous.com in Resend, or set SENDER_EMAIL=onboarding@resend.dev for now."
+        elif "api key" in low or "unauthorized" in low or "401" in low:
+            hint = " → RESEND_API_KEY on Render is wrong or revoked — create a new key in Resend."
+        return False, f"Resend refused it: {msg[:300]}{hint}"

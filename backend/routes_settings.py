@@ -142,6 +142,37 @@ async def admin_save_settings(payload: dict):
     return await get_settings()
 
 
+@router.get("/settings/integrations")
+async def integrations_status():
+    """Which external services are wired up — booleans only, never secrets.
+    Gives the admin an explanation rather than silent failure."""
+    import os
+    import email_service
+    import storage
+
+    return {
+        "lead_alerts": email_service.status(),
+        "chat": {
+            "ready": bool(os.environ.get("ANTHROPIC_API_KEY")),
+            "model": os.environ.get("CHAT_MODEL", "claude-sonnet-4-5-20250929"),
+        },
+        "media": {"provider": storage.provider()},
+        "site_url": os.environ.get("SITE_URL", ""),
+    }
+
+
+@router.post("/settings/test-email")
+async def send_test_email():
+    """Send a real test alert to LEAD_NOTIFICATION_EMAIL and return Resend's
+    actual response, so a misconfiguration is visible without reading logs."""
+    import email_service
+    from ratelimit import hit
+
+    hit("test-email", 5, 600)  # each call is a real email
+    ok, detail = await email_service.send_test_email()
+    return {"ok": ok, "detail": detail}
+
+
 async def seed_settings():
     if not await db.settings.find_one({"id": DOC_ID}):
         await db.settings.insert_one({**defaults(), "id": DOC_ID, "updated_at": now_iso()})
