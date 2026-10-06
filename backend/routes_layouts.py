@@ -21,6 +21,22 @@ BUILDABLE_PAGES = ["home", "about", "services", "insights", "contact"]
 # adding a block type here makes it available in the builder immediately.
 BLOCK_TYPES = [
     {
+        "type": "marketing_strip",
+        "label": "Marketing strip",
+        "description": "Thin announcement band. Scrolls as a carousel or sits still — your choice.",
+        "singleton": False,
+        "fields": [
+            {"key": "messages", "label": "Messages", "type": "array"},
+            {"key": "carousel", "label": "Scroll as a carousel", "type": "boolean"},
+            {"key": "speed", "label": "Carousel speed", "type": "select",
+             "options": ["slow", "medium", "fast"]},
+            {"key": "tone", "label": "Colour", "type": "select",
+             "options": ["gold", "navy"]},
+            {"key": "link_label", "label": "Link label (optional)", "type": "text"},
+            {"key": "link", "label": "Link URL (optional)", "type": "text"},
+        ],
+    },
+    {
         "type": "hero",
         "label": "Hero",
         "description": "Full-dark band, headline, sub, two CTAs, image on the right.",

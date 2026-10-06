@@ -171,6 +171,7 @@ async def sitemap():
         ("/contact", "0.8", "monthly"),
         ("/privacy", "0.4", "yearly"),
         ("/terms", "0.4", "yearly"),
+        ("/disclaimer", "0.3", "yearly"),
     ]
     services = await db.services.find({"active": True}, {"_id": 0, "slug": 1}).to_list(500)
     for s in services:

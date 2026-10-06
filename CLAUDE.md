@@ -35,7 +35,16 @@ seniority or testimonials.
   derives the public URL itself. All frontend uploads go through
   `frontend/src/lib/upload.js`. No SVG — it can carry script.
 - **Copy:** site chrome lives in Site settings; homepage copy lives in Page
-  builder block props. Don't hardcode user-facing strings in JSX.
+  builder block props. Don't hardcode user-facing strings in JSX. Legal/CMS page
+  copy is seeded from `backend/content/*.md`; `{{email}}`, `{{brand_name}}` and
+  `{{lead_retention}}`-style tokens are filled from Site settings at render
+  (`CmsPage.jsx`), so policies never restate a setting.
+
+- **Email:** inbound `info@synferrous.com` forwards via ImprovMX (root MX/SPF) to
+  `info.synferrous@gmail.com`. Lead alerts go out via Resend from
+  `alerts@synferrous.com` (domain verified, Tokyo region; records live on the
+  `send.` subdomain and `resend._domainkey`). Don't touch the root MX/SPF when
+  changing Resend. Admin → Site settings → Send test email checks the setup.
 
 ## Standing rules
 

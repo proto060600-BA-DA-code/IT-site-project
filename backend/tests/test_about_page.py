@@ -36,10 +36,10 @@ def test_meta_description_fits_googles_snippet(client):
 
 
 def test_content_uses_only_markdown_the_site_can_render():
-    """The CMS renderer supports headings, lists, bold, italics and code — not
-    links, tables, blockquotes or images. Those would show up as raw symbols."""
+    """The CMS renderer supports headings, lists, bold, italics, code and
+    [links](/path) — not tables, blockquotes or images. Those would show up as
+    raw symbols."""
     body = ABOUT_PAGE["content"]
     assert not re.search(r"^\s*>", body, re.M), "blockquotes aren't rendered"
-    assert not re.search(r"\[[^\]]+\]\([^)]+\)", body), "links aren't rendered"
     assert not re.search(r"^\s*\|", body, re.M), "tables aren't rendered"
     assert "![" not in body, "images aren't rendered"

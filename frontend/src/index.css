@@ -263,8 +263,18 @@ h4, h5, h6   { letter-spacing: -0.014em; line-height: 1.3; }
 .rise-d3 { animation-delay: .24s; }
 .rise-d4 { animation-delay: .32s; }
 
+/* Marketing strip carousel: the track holds two identical halves, so sliding
+   it by -50% lands exactly where it started. Pauses on hover. */
+@keyframes strip-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.strip-track { animation: strip-scroll 45s linear infinite; will-change: transform; }
+.strip-viewport:hover .strip-track { animation-play-state: paused; }
+
 @media (prefers-reduced-motion: reduce) {
     .rise, .rise-d1, .rise-d2, .rise-d3, .rise-d4 { animation: none; }
+    .strip-track { animation: none; }
 }
 
 @layer components {

@@ -47,7 +47,14 @@ export default function ReactMarkdownLite({ text = "" }) {
 
 function applyInline(s) {
   return s
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+    // [text](url) — only site-relative, http(s) and mailto targets, so a
+    // `javascript:` URL typed into the CMS can never become a live link.
+    // Quotes are already escaped above, so the href can't break out.
+    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:|\/)[^\s)]*)\)/g, (_, label, url) =>
+      /^https?:/.test(url)
+        ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
+        : `<a href="${url}">${label}</a>`)
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/`([^`]+)`/g, "<code>$1</code>");

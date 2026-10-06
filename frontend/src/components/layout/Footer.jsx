@@ -43,7 +43,8 @@ export default function Footer() {
             <li><Link to="/insights" data-testid="footer-link-insights" className="inline-block py-1.5 text-white/80 hover:text-white">Insights</Link></li>
             <li><Link to="/contact" data-testid="footer-link-contact" className="inline-block py-1.5 text-white/80 hover:text-white">Contact Us</Link></li>
             <li><Link to="/privacy" data-testid="footer-link-privacy" className="inline-block py-1.5 text-white/80 hover:text-white">Privacy Policy</Link></li>
-            <li><Link to="/terms" data-testid="footer-link-terms" className="inline-block py-1.5 text-white/80 hover:text-white">Terms &amp; Conditions</Link></li>
+            <li><Link to="/terms" data-testid="footer-link-terms" className="inline-block py-1.5 text-white/80 hover:text-white">Terms of Use</Link></li>
+            <li><Link to="/disclaimer" data-testid="footer-link-disclaimer" className="inline-block py-1.5 text-white/80 hover:text-white">Disclaimer</Link></li>
           </ul>
         </div>
 

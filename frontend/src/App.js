@@ -87,7 +87,8 @@ function AppRoutes() {
         <Route path="/categories/:slug" element={<CategoryPage />} />
         <Route path="/about" element={<CmsPage slug="about" fallbackTitle="About Synferrous" fallbackContent="Loading…" />} />
         <Route path="/privacy" element={<CmsPage slug="privacy" fallbackTitle="Privacy Policy" fallbackContent="Loading…" />} />
-        <Route path="/terms" element={<CmsPage slug="terms" fallbackTitle="Terms & Conditions" fallbackContent="Loading…" />} />
+        <Route path="/terms" element={<CmsPage slug="terms" fallbackTitle="Terms of Use" fallbackContent="Loading…" />} />
+        <Route path="/disclaimer" element={<CmsPage slug="disclaimer" fallbackTitle="Disclaimer" fallbackContent="Loading…" />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/insights" element={<InsightsList />} />
         <Route path="/insights/:slug" element={<InsightDetail />} />

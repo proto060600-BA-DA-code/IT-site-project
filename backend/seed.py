@@ -21,6 +21,49 @@ ABOUT_PAGE = {
 PLACEHOLDER_MARKER = "[PLACEHOLDER — replace with your real story"
 
 
+# Legal pages. `{{key}}` tokens are filled from Site settings when the page is
+# rendered, so the contact email and retention periods are never restated here.
+def _content(name):
+    return (Path(__file__).parent / "content" / name).read_text(encoding="utf-8")
+
+
+LEGAL_PAGES = {
+    "privacy": {
+        "title": "Privacy Policy",
+        "meta_description": "What personal data Synferrous collects, why, who it's shared with, how long "
+                            "it's kept, and your rights under India's DPDP Act.",
+        "content": _content("privacy.md"),
+    },
+    "terms": {
+        "title": "Terms of Use",
+        "meta_description": "The terms for using synferrous.com, and how consulting engagements are agreed.",
+        "content": _content("terms.md"),
+    },
+    "disclaimer": {
+        "title": "Disclaimer",
+        "meta_description": "Site content, prices and AI answers on synferrous.com are general and indicative.",
+        "content": _content("disclaimer.md"),
+    },
+}
+
+# The original privacy and terms pages carried this visible placeholder note.
+LEGAL_PLACEHOLDER_MARKER = "[PLACEHOLDER — have this reviewed"
+
+
+async def migrate_legal_pages():
+    """One-time: replace privacy/terms only while they are still the untouched
+    placeholder. A page edited in the admin is never overwritten."""
+    if await db.migrations.find_one({"id": "legal_pages_v2"}):
+        return
+    replaced = []
+    for slug in ("privacy", "terms"):
+        doc = await db.pages.find_one({"slug": slug}, {"_id": 0, "content": 1})
+        if doc and LEGAL_PLACEHOLDER_MARKER in (doc.get("content") or ""):
+            await db.pages.update_one({"slug": slug}, {"$set": {**LEGAL_PAGES[slug], "updated_at": now_iso()}})
+            replaced.append(slug)
+    await db.migrations.insert_one({"id": "legal_pages_v2", "at": now_iso(), "replaced": replaced})
+
+
 async def upgrade_placeholder_about():
     """Swap in the real About page — but only if the page is still the
     untouched placeholder. Anything edited in the admin is never overwritten."""
@@ -180,6 +223,29 @@ async def migrate_contact_email_info():
     await _rewrite_content_once("contact_email_info", CONTACT_EMAIL_REPLACEMENTS)
 
 
+async def migrate_launch_strip():
+    """One-time: put the 'new website' marketing strip at the top of the saved
+    home layout. Run once only, so removing or hiding it in the builder sticks."""
+    from models import Block
+    if await db.migrations.find_one({"id": "launch_strip"}):
+        return
+    doc = await db.layouts.find_one({"page": "home"}, {"_id": 0, "blocks": 1})
+    if doc and not any(b.get("type") == "marketing_strip" for b in doc.get("blocks", [])):
+        strip = Block(type="marketing_strip", props={
+            "messages": ["This is our new website — the official launch will follow soon."],
+            "carousel": True,
+            "speed": "medium",
+            "tone": "gold",
+            "link_label": "Get in touch",
+            "link": "/contact",
+        }).model_dump()
+        await db.layouts.update_one(
+            {"page": "home"},
+            {"$set": {"blocks": [strip, *doc.get("blocks", [])], "updated_at": now_iso()}},
+        )
+    await db.migrations.insert_one({"id": "launch_strip", "at": now_iso()})
+
+
 async def seed_admin():
     email = os.environ["ADMIN_EMAIL"].lower()
     password = os.environ["ADMIN_PASSWORD"]
@@ -313,82 +379,9 @@ Treating the fractional BA as a part-time project manager. They are not. They ar
         if not await db.banners.find_one({"title": b["title"]}):
             await db.banners.insert_one(Banner(**b).model_dump())
 
-    # PAGES (about / privacy / terms)
-    pages_seed = [
-        {"slug": "about", **ABOUT_PAGE},
-        {"slug": "privacy",
-         "title": "Privacy Policy",
-         "meta_description": "How Synferrous handles your data.",
-         "content": """**Effective date:** January 1, 2026
-
-> **[PLACEHOLDER — have this reviewed by a qualified legal advisor before publishing.]**
-
-Synferrous ("we", "us") respects your privacy. This policy explains what data we collect via synferrous.com (the "Site") and how we use it.
-
-## 1. Information we collect
-- **Contact data** you provide via forms: name, email, phone, company, message.
-- **Usage data**: anonymous analytics (pages viewed, referrer, device class) collected via privacy-friendly analytics.
-- **Chat data**: when you use our AI assistant Aria, the conversation is stored against an anonymous session ID for quality and continuity.
-
-## 2. How we use it
-- Respond to your inquiry and qualify it as a sales lead.
-- Improve the Site, the assistant and our service offerings.
-- Send occasional updates (only if you opt in).
-
-## 3. Sharing
-We do **not** sell your data. We share it only with:
-- Our LLM provider, strictly to power the AI assistant.
-- Email delivery providers, strictly to reply to you.
-- Authorities if required by law.
-
-## 4. Retention
-Leads are kept for 36 months; chat transcripts for 12 months; you may request deletion at any time at info@synferrous.com.
-
-## 5. Your rights
-Subject to applicable law, you may request access, correction, deletion and portability of your data. Email info@synferrous.com.
-
-## 6. Cookies
-We use a minimal session cookie for authentication. No third-party advertising cookies.
-
-## 7. Contact
-Synferrous, Delhi NCR, India — info@synferrous.com
-"""},
-        {"slug": "terms",
-         "title": "Terms & Conditions",
-         "meta_description": "Terms of use for the Synferrous website.",
-         "content": """**Last updated:** January 1, 2026
-
-> **[PLACEHOLDER — have this reviewed by a qualified legal advisor before publishing.]**
-
-By accessing synferrous.com (the "Site") you agree to these Terms.
-
-## 1. Use of the Site
-You may use the Site for lawful informational purposes only. You may not scrape, reverse-engineer or attempt to disrupt the Site or our AI assistant.
-
-## 2. No professional advice
-Content on this Site, including responses from our AI assistant Aria, is provided for general informational purposes and does not constitute professional consulting advice. Engagement letters and signed statements of work govern any actual consulting work.
-
-## 3. Intellectual property
-All trademarks, logos, copy, designs and code on the Site are owned by Synferrous or our licensors. You may not reproduce them without written permission.
-
-## 4. AI assistant disclaimer
-The AI assistant ("Aria") may generate inaccurate or out-of-date information. Do not rely on it for binding decisions. Pricing displayed by Aria is indicative; final pricing is confirmed in writing.
-
-## 5. Accounts
-You are responsible for safeguarding your account credentials. Notify us immediately at info@synferrous.com of any unauthorized use.
-
-## 6. Limitation of liability
-To the maximum extent permitted by law, Synferrous is not liable for indirect, incidental or consequential damages arising from your use of the Site.
-
-## 7. Governing law
-These Terms are governed by the laws of India. Disputes will be subject to the exclusive jurisdiction of the courts of Delhi, India.
-
-## 8. Changes
-We may update these Terms. The "Last updated" date at the top reflects the latest revision.
-
-## 9. Contact
-info@synferrous.com
-"""},
+    # PAGES (about / privacy / terms / disclaimer) — copy lives in content/*.md
+    pages_seed = [{"slug": "about", **ABOUT_PAGE}] + [
+        {"slug": slug, **page} for slug, page in LEGAL_PAGES.items()
     ]
     for p in pages_seed:
         if not await db.pages.find_one({"slug": p["slug"]}):
@@ -410,6 +403,8 @@ async def run_all():
     await upgrade_placeholder_about()
     await seed_layouts()
     await seed_settings()
+    await migrate_legal_pages()
+    await migrate_launch_strip()
     # Last, so they see every seeded or pre-existing document.
     await migrate_rebrand_synferrous()
     await migrate_contact_email_info()

@@ -12,6 +12,7 @@
     { "source": "/about", "destination": "/index" },
     { "source": "/privacy", "destination": "/index" },
     { "source": "/terms", "destination": "/index" },
+    { "source": "/disclaimer", "destination": "/index" },
     { "source": "/contact", "destination": "/index" },
     { "source": "/login", "destination": "/index" },
     { "source": "/register", "destination": "/index" },

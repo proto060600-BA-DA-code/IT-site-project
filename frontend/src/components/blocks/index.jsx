@@ -34,6 +34,71 @@ function Stat({ n, label }) {
   );
 }
 
+/* ── Marketing strip ──────────────────────────────────────────────────── */
+const DEFAULT_STRIP = ["This is our new website — the official launch will follow soon."];
+const STRIP_SPEED = { slow: 70, medium: 45, fast: 28 }; // seconds per loop
+
+function StripLink({ to, children }) {
+  const cls = "underline underline-offset-4 decoration-1 hover:decoration-2 whitespace-nowrap";
+  return /^https?:\/\//.test(to)
+    ? <a href={to} target="_blank" rel="noopener noreferrer" className={cls}>{children}</a>
+    : <Link to={to} className={cls}>{children}</Link>;
+}
+
+function MarketingStripBlock({ props: p }) {
+  const messages = p.messages?.length ? p.messages : DEFAULT_STRIP;
+  const navy = p.tone === "navy";
+  const tone = navy
+    ? "bg-navy-950 text-white border-[var(--line-dark)]"
+    : "bg-[var(--gold)] text-navy-950 border-[var(--gold)]";
+  const divider = navy ? "border-white/15" : "border-black/15";
+  const link = p.link && p.link_label ? <StripLink to={p.link}>{p.link_label}</StripLink> : null;
+  const Sep = () => <span aria-hidden="true" className="opacity-50 px-6">✦</span>;
+
+  if (!p.carousel) {
+    return (
+      <div className={`border-b ${tone}`} data-testid="marketing-strip" role="note">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10 py-2.5 flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-center text-[13px] font-medium tracking-wide">
+          {messages.map((m, i) => (
+            <span key={i} className="inline-flex items-center">{i > 0 && <Sep />}{m}</span>
+          ))}
+          {link && <span className="ml-3">{link}</span>}
+        </div>
+      </div>
+    );
+  }
+
+  // Repeat short lists so one half of the track is wider than the screen,
+  // then render the track twice and slide it by exactly half — a seamless loop.
+  const reps = Math.max(1, Math.ceil(6 / messages.length));
+  const run = Array.from({ length: reps }, () => messages).flat();
+  const half = (
+    <div className="flex shrink-0 items-center">
+      {run.map((m, i) => (
+        <span key={i} className="inline-flex items-center whitespace-nowrap"><Sep />{m}</span>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className={`border-b ${tone} flex items-stretch`} data-testid="marketing-strip" role="note">
+      {/* Screen readers get the messages once, not an endless loop. */}
+      <span className="sr-only">{messages.join(". ")}</span>
+      <div className="strip-viewport flex-1 overflow-hidden py-2.5 text-[13px] font-medium tracking-wide" aria-hidden="true">
+        <div className="strip-track flex w-max"
+          style={{ animationDuration: `${STRIP_SPEED[p.speed] || STRIP_SPEED.medium}s` }}>
+          {half}{half}
+        </div>
+      </div>
+      {link && (
+        <div className={`shrink-0 flex items-center px-3 sm:px-5 text-[13px] font-semibold border-l ${divider}`}>
+          {link}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 function HeroBlock({ props: p, ctx }) {
   const banner = ctx.banners?.[0] || {};
@@ -331,6 +396,7 @@ const SpacerBlock = ({ props: p }) => {
 };
 
 export const BLOCK_COMPONENTS = {
+  marketing_strip: MarketingStripBlock,
   hero: HeroBlock,
   trusted_by: TrustedByBlock,
   capabilities: CapabilitiesBlock,

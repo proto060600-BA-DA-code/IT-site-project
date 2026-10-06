@@ -14,8 +14,11 @@ export default function CmsPage({ slug, fallbackTitle, fallbackContent }) {
   }, [slug]);
 
   const title = page?.title || fallbackTitle;
-  const content = page?.content || fallbackContent;
-  const hasGrievance = s.grievance_officer_name || s.grievance_officer_email;
+  const content = fillTokens(page?.content || fallbackContent, s);
+  // Fall back to the main contact address so the policy never points at a
+  // grievance contact that isn't there.
+  const grievanceEmail = s.grievance_officer_email || s.email;
+  const hasGrievance = s.grievance_officer_name || grievanceEmail;
 
   return (
     <div data-testid={`cms-page-${slug}`}>
@@ -39,9 +42,9 @@ export default function CmsPage({ slug, fallbackTitle, fallbackContent }) {
             </p>
             <p className="!mb-0">
               {s.grievance_officer_name && <strong>{s.grievance_officer_name}</strong>}
-              {s.grievance_officer_name && s.grievance_officer_email && <br />}
-              {s.grievance_officer_email && (
-                <a href={`mailto:${s.grievance_officer_email}`} className="underline">{s.grievance_officer_email}</a>
+              {s.grievance_officer_name && grievanceEmail && <br />}
+              {grievanceEmail && (
+                <a href={`mailto:${grievanceEmail}`} className="underline">{grievanceEmail}</a>
               )}
             </p>
           </div>
@@ -49,4 +52,30 @@ export default function CmsPage({ slug, fallbackTitle, fallbackContent }) {
       </section>
     </div>
   );
+}
+
+/** 730 → "deleted automatically after 2 years"; 0 means the retention job keeps data indefinitely. */
+function retention(days) {
+  const n = Number(days);
+  if (!n) return "kept until you ask us to delete them";
+  const span = n % 365 === 0 ? (n === 365 ? "1 year" : `${n / 365} years`) : `${n} days`;
+  return `deleted automatically after ${span}`;
+}
+
+/**
+ * Pages can say {{email}}, {{brand_name}} or {{lead_retention}} instead of
+ * restating values that live in Site settings — one source of truth, so the
+ * policy can't drift from what the retention job actually does.
+ */
+function fillTokens(text, s) {
+  if (!text) return text;
+  const values = {
+    lead_retention: retention(s.lead_retention_days ?? 730),
+    spam_retention: retention(s.spam_retention_days ?? 30),
+    audit_retention: retention(s.audit_retention_days ?? 730),
+  };
+  return text.replace(/\{\{\s*([a-z_]+)\s*\}\}/g, (m, key) => {
+    const v = key in values ? values[key] : s[key];
+    return typeof v === "string" || typeof v === "number" ? String(v) : m;
+  });
 }
