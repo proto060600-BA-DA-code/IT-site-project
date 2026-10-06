@@ -24,6 +24,7 @@ Synferrous is run by Rohan Kapoor, a techno-functional business analyst. Every e
 ## Optional
 - [Privacy Policy](https://synferrous.com/privacy)
 - [Terms of Use](https://synferrous.com/terms)
+- [Cookie Policy](https://synferrous.com/cookies)
 - [Disclaimer](https://synferrous.com/disclaimer)
 
 Sitemap: https://synferrous.com/sitemap.xml

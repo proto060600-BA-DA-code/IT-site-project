@@ -1,6 +1,7 @@
 """Legal pages (DPDP privacy notice, terms, disclaimer) and the marketing strip."""
 import asyncio
 import re
+from pathlib import Path
 
 import db as dbm
 from seed import LEGAL_PAGES, LEGAL_PLACEHOLDER_MARKER, migrate_legal_pages, migrate_launch_strip
@@ -12,7 +13,7 @@ def run(coro):
 
 # ── Legal pages ─────────────────────────────────────────────────────────────
 def test_fresh_install_serves_real_legal_pages(client):
-    for slug in ("privacy", "terms", "disclaimer"):
+    for slug in ("privacy", "terms", "cookies", "disclaimer"):
         page = client.get(f"/api/pages/{slug}").json()
         assert "PLACEHOLDER" not in page["content"], slug
         assert page["content"] == LEGAL_PAGES[slug]["content"]
@@ -61,8 +62,43 @@ def test_legal_pages_have_no_unrenderable_markdown_and_safe_links():
         assert len(page["meta_description"]) <= 155, slug
 
 
-def test_disclaimer_is_in_the_sitemap(client):
-    assert "/disclaimer</loc>" in client.get("/api/sitemap.xml").text
+def test_legal_pages_are_in_the_sitemap(client):
+    xml = client.get("/api/sitemap.xml").text
+    for path in ("/privacy", "/terms", "/cookies", "/disclaimer"):
+        assert f"{path}</loc>" in xml, path
+
+
+# ── Cookie policy stays true to the code ───────────────────────────────────
+FRONTEND_SRC = Path(__file__).resolve().parents[2] / "frontend" / "src"
+
+
+def _frontend_code():
+    for f in FRONTEND_SRC.rglob("*"):
+        if f.suffix in (".js", ".jsx") and "testIds" not in f.parts:
+            yield f, f.read_text(encoding="utf-8")
+
+
+def test_frontend_sets_no_cookies():
+    for f, code in _frontend_code():
+        assert "document.cookie" not in code, f"{f} sets a cookie — update the Cookie Policy (and add consent)"
+
+
+def test_every_browser_storage_key_is_disclosed():
+    """A new localStorage key that isn't listed in the Cookie Policy fails here."""
+    policy = LEGAL_PAGES["cookies"]["content"]
+    keys = set()
+    for _, code in _frontend_code():
+        keys |= set(re.findall(r"(?:local|session)Storage\.(?:get|set|remove)Item\(\s*[\"']([\w:-]+)", code))
+        keys |= set(re.findall(r"const \w*_KEY\s*=\s*[\"']([\w:-]+)[\"']", code))
+    assert keys, "found no storage keys — has the scan broken?"
+    missing = sorted(k for k in keys if f"`{k}`" not in policy)
+    assert not missing, f"not in the Cookie Policy: {missing}"
+
+
+def test_no_third_party_trackers_in_the_page_shell():
+    shell = (FRONTEND_SRC.parent / "public" / "index.html").read_text(encoding="utf-8")
+    for tracker in ("googletagmanager", "google-analytics", "gtag(", "fbq(", "hotjar", "clarity.ms"):
+        assert tracker not in shell, f"{tracker} added — the Cookie Policy says there's no tracking"
 
 
 # ── Marketing strip ─────────────────────────────────────────────────────────

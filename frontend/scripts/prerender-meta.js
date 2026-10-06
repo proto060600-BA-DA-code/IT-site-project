@@ -189,7 +189,7 @@ function llmsTxt(manifest, brand, site) {
   const posts = routes.filter((r) => r.path.startsWith("/insights/"));
   const pages = routes.filter((r) =>
     ["/services", "/about", "/contact", "/insights"].includes(r.path));
-  const legal = routes.filter((r) => ["/privacy", "/terms", "/disclaimer"].includes(r.path));
+  const legal = routes.filter((r) => ["/privacy", "/terms", "/cookies", "/disclaimer"].includes(r.path));
 
   return [
     `# ${brand}`,

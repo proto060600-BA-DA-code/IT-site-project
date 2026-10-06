@@ -69,7 +69,7 @@ The Site is served only over HTTPS. Access to enquiries is limited to authorised
 
 ## 9. Your browser storage
 
-The Site does not set cookies, and visitors don't need an account. If you use the chat assistant, a random session ID is saved in your browser's local storage so the conversation can continue. You can clear it at any time from your browser settings. (Site administrators who sign in also keep a login token there.)
+The Site does not set cookies, and visitors don't need an account. If you use the chat assistant, a random session ID is saved in your browser's local storage so the conversation can continue. You can clear it at any time from your browser settings. (Site administrators who sign in also keep a login token there.) Full details are in our [Cookie Policy](/cookies).
 
 ## 10. Language
 

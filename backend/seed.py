@@ -39,6 +39,12 @@ LEGAL_PAGES = {
         "meta_description": "The terms for using synferrous.com, and how consulting engagements are agreed.",
         "content": _content("terms.md"),
     },
+    "cookies": {
+        "title": "Cookie Policy",
+        "meta_description": "synferrous.com sets no cookies and runs no analytics or tracking. "
+                            "What the site stores in your browser, and why.",
+        "content": _content("cookies.md"),
+    },
     "disclaimer": {
         "title": "Disclaimer",
         "meta_description": "Site content, prices and AI answers on synferrous.com are general and indicative.",
